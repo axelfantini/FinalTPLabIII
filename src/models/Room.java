@@ -18,4 +18,11 @@ public class Room {
         this.statusReason = statusReason;
     }
 
+    public UUID getId() {
+        return this.id;
+    }
+
+    public void addBooking (Booking booking){
+        this.bookings.add(booking);
+    }
 }

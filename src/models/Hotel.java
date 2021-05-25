@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Hotel {
     private String name;
@@ -45,6 +46,18 @@ public class Hotel {
         if(!customers.stream().anyMatch(e -> e.getDni().equals(customer.getDni())))
         {
             customers.add(customer);
+        }
+    }
+
+    public void createBooking(String dni, UUID roomId, Booking booking)
+    {
+        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
+        if(customer != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
+        {
+            bookings.add(booking);
+            room.addBooking(booking);
+            customer.addBooking(booking);
         }
     }
 }
