@@ -11,4 +11,11 @@ public class Room {
     private RoomStatusEnum status;
     private String statusReason;
     private List<Booking> bookings = new ArrayList<>();
+
+    public Room(RoomStatusEnum status, String statusReason) {
+        this.id = UUID.randomUUID();
+        this.status = status;
+        this.statusReason = statusReason;
+    }
+
 }
