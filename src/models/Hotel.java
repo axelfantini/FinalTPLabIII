@@ -30,7 +30,7 @@ public class Hotel {
 
     public void createEmployee(Employee employee)
     {
-        if(!employees.stream().anyMatch(e -> e.getDni() == employee.getDni()))
+        if(!employees.stream().anyMatch(e -> e.getDni().equals(employee.getDni())))
         {
             employees.add(employee);
         }
@@ -41,4 +41,10 @@ public class Hotel {
         _employees.forEach(e -> this.createEmployee(e));
     }
 
+    public void createCustomer (Customer customer){
+        if(!customers.stream().anyMatch(e -> e.getDni().equals(customer.getDni())))
+        {
+            customers.add(customer);
+        }
+    }
 }
