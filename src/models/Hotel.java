@@ -51,6 +51,14 @@ public class Hotel {
         }
     }
 
+    public void createReceptionist(Employee employee){
+        if(!employees.stream().anyMatch(e -> e.getDni().equals(employee.getDni())))
+        {
+            employees.add(employee);
+        }
+    }
+
+
     public void createBooking(String dni, UUID roomId, Booking booking)
     {
         Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
