@@ -1,5 +1,7 @@
 package models;
 
+import enums.RoomStatusEnum;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -55,9 +57,11 @@ public class Hotel {
         Room room = rooms.stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
         if(customer != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
         {
+            booking.setRoomId(room.getId());
             bookings.add(booking);
             room.addBooking(booking);
             customer.addBooking(booking);
+            room.setStatus(RoomStatusEnum.OCCUPIED, "OCCUPIED");
         }
     }
 
@@ -81,5 +85,21 @@ public class Hotel {
             response = customer.checkPassword(password);
         }
         return response;
+    }
+
+    public void finishBooking(String dni, UUID roomId)
+    {
+        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        if(customer != null)
+        {
+            Booking booking = customer.getBookingByRoomId(roomId);
+            if(booking != null)
+            {
+                booking.finish();
+                Room room = rooms.stream().filter(c -> c.getId().equals(roomId)).findFirst().orElse(null);
+                if(room != null)
+                    room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
+            }
+        }
     }
 }

@@ -22,6 +22,11 @@ public class Room {
         return this.id;
     }
 
+    public void setStatus(RoomStatusEnum status, String statusReason) {
+        this.status = status;
+        this.statusReason = statusReason;
+    }
+
     public void addBooking (Booking booking){
         this.bookings.add(booking);
     }

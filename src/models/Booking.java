@@ -6,15 +6,25 @@ import java.util.UUID;
 public class Booking {
     private UUID id;
     private LocalDate startDate;
+    private LocalDate expectedFinishDate;
     private LocalDate finishDate;
     private Boolean lateCheckout;
     private Boolean canceled;
+    private UUID roomId;
 
-    public Booking(LocalDate startDate, LocalDate finishDate, Boolean lateCheckout) {
+    public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout) {
         this.startDate = startDate;
-        this.finishDate = finishDate;
+        this.expectedFinishDate = expectedFinishDate;
         this.lateCheckout = lateCheckout;
         this.id = UUID.randomUUID();
+    }
+
+    public void setRoomId(UUID roomId) {
+        this.roomId = roomId;
+    }
+
+    public UUID getRoomId() {
+        return this.roomId;
     }
 
     public LocalDate getStartDate() {
@@ -24,4 +34,11 @@ public class Booking {
     public LocalDate getFinishDate() {
         return finishDate;
     }
+
+    public void finish()
+    {
+        this.canceled = true;
+        this.finishDate = LocalDate.now();
+    }
+
 }
