@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Customer extends User {
     private List<Booking> bookings = new ArrayList<>();
@@ -12,5 +13,10 @@ public class Customer extends User {
 
     public void addBooking (Booking booking){
         this.bookings.add(booking);
+    }
+
+    public Booking getBookingByRoomId(UUID roomId)
+    {
+        return bookings.stream().filter(b -> b.getRoomId().equals(roomId)).findFirst().orElse(null);
     }
 }

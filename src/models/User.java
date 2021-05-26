@@ -18,4 +18,9 @@ public abstract class User {
     public String getDni() {
         return this.dni;
     }
+
+    public Boolean checkPassword(String password)
+    {
+        return this.password.equals(password);
+    }
 }
