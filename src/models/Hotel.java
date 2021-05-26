@@ -59,13 +59,13 @@ public class Hotel {
     }
 
 
-    public void createBooking(String dni, UUID roomId, Booking booking)
+    public void createBooking(String dni, Integer roomNum, Booking booking)
     {
         Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
-        Room room = rooms.stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
         if(customer != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
         {
-            booking.setRoomId(room.getId());
+            booking.setRoomId(room.getRoomNum());
             bookings.add(booking);
             room.addBooking(booking);
             customer.addBooking(booking);
@@ -95,7 +95,7 @@ public class Hotel {
         return response;
     }
 
-    public void finishBooking(String dni, UUID roomId)
+    public void finishBooking(String dni, Integer roomId)
     {
         Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
         if(customer != null)
@@ -104,7 +104,7 @@ public class Hotel {
             if(booking != null)
             {
                 booking.finish();
-                Room room = rooms.stream().filter(c -> c.getId().equals(roomId)).findFirst().orElse(null);
+                Room room = rooms.stream().filter(c -> c.getRoomNum().equals(roomId)).findFirst().orElse(null);
                 if(room != null)
                     room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
             }

@@ -15,7 +15,7 @@ public class Customer extends User {
         this.bookings.add(booking);
     }
 
-    public Booking getBookingByRoomId(UUID roomId)
+    public Booking getBookingByRoomId(Integer roomId)
     {
         return bookings.stream().filter(b -> b.getRoomId().equals(roomId)).findFirst().orElse(null);
     }

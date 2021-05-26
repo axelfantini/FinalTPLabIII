@@ -10,7 +10,7 @@ public class Booking {
     private LocalDate finishDate;
     private Boolean lateCheckout;
     private Boolean canceled;
-    private UUID roomId;
+    private Integer roomId;
 
     public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout) {
         this.startDate = startDate;
@@ -19,11 +19,11 @@ public class Booking {
         this.id = UUID.randomUUID();
     }
 
-    public void setRoomId(UUID roomId) {
+    public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
 
-    public UUID getRoomId() {
+    public Integer getRoomId() {
         return this.roomId;
     }
 
