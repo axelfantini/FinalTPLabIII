@@ -8,15 +8,11 @@ public class Employee extends User {
         this.isAdmin = isAdmin;
     }
 
-
-
     public Boolean getAdmin() {
-        return isAdmin;
+        return this.isAdmin;
     }
 
     public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+        this.isAdmin = admin;
     }
-
-
 }

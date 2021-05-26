@@ -47,4 +47,13 @@ public class Hotel {
             customers.add(customer);
         }
     }
+
+    public void createReceptionist(Employee employee){
+        if(!employees.stream().anyMatch(e -> e.getDni().equals(employee.getDni())))
+        {
+            employees.add(employee);
+        }
+    }
+
+
 }
