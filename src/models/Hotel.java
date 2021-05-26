@@ -60,4 +60,26 @@ public class Hotel {
             customer.addBooking(booking);
         }
     }
+
+    public Boolean employeeLogin(String dni, String password)
+    {
+        Boolean response = false;
+        Employee employee = employees.stream().filter(e -> e.getDni().equals(dni)).findFirst().orElse(null);
+        if(employee != null)
+        {
+            response = employee.checkPassword(password);
+        }
+        return response;
+    }
+
+    public Boolean customerLogin(String dni, String password)
+    {
+        Boolean response = false;
+        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        if(customer != null)
+        {
+            response = customer.checkPassword(password);
+        }
+        return response;
+    }
 }
