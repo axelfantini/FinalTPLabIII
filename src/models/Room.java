@@ -18,6 +18,14 @@ public class Room {
         this.statusReason = statusReason;
     }
 
+    public RoomStatusEnum getStatus() {
+        return status;
+    }
+
+    public String getStatusReason() {
+        return statusReason;
+    }
+
     public Integer getRoomNum() {
         return this.roomNum;
     }

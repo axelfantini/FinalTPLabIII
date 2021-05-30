@@ -1,5 +1,6 @@
 package models;
 
+import enums.ErrorEnum;
 import enums.RoomStatusEnum;
 
 import java.util.ArrayList;
@@ -21,9 +22,21 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public void createRoom(Room room)
+    public ErrorResponse createRoom(Room room)
     {
-        rooms.add(room);
+        ErrorResponse errorResponse = new ErrorResponse();
+        if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(room.getRoomNum())))
+        {
+            rooms.add(room);
+            errorResponse.setSuccess(true);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_WITH_SAME_NUM);
+        }
+        return errorResponse;
+
     }
 
     public void createRoomsRange(List<Room> _rooms)
@@ -31,33 +44,30 @@ public class Hotel {
         _rooms.forEach(r -> this.createRoom(r));
     }
 
-    public void createEmployee(Employee employee)
+    public ErrorResponse createUser(User user)
     {
-        if(!employees.stream().anyMatch(e -> e.getDni().equals(employee.getDni())))
+        ErrorResponse errorResponse = new ErrorResponse();
+        if(!employees.stream().anyMatch(e -> e.getDni().equals(user.getDni()))
+                && !customers.stream().anyMatch(c -> c.getDni().equals(user.getDni())))
         {
-            employees.add(employee);
+            if(user instanceof Employee)
+                employees.add((Employee)user);
+            else if(user instanceof Customer)
+                customers.add((Customer)user);
+            errorResponse.setSuccess(true);
         }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+        }
+        return errorResponse;
     }
 
-    public void createEmployeeRange(List<Employee> _employees)
+    public void createUserRange(List<User> users)
     {
-        _employees.forEach(e -> this.createEmployee(e));
+        users.forEach(u -> this.createUser(u));
     }
-
-    public void createCustomer (Customer customer){
-        if(!customers.stream().anyMatch(e -> e.getDni().equals(customer.getDni())))
-        {
-            customers.add(customer);
-        }
-    }
-
-    public void createReceptionist(Employee employee){
-        if(!employees.stream().anyMatch(e -> e.getDni().equals(employee.getDni())))
-        {
-            employees.add(employee);
-        }
-    }
-
 
     public void createBooking(String dni, Integer roomNum, Booking booking)
     {
@@ -109,5 +119,14 @@ public class Hotel {
                     room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", stars=" + stars +
+                '}';
     }
 }

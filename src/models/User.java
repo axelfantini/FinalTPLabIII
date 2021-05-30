@@ -15,6 +15,18 @@ public abstract class User {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
     public String getDni() {
         return this.dni;
     }
@@ -22,5 +34,16 @@ public abstract class User {
     public Boolean checkPassword(String password)
     {
         return this.password.equals(password);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", dni='" + dni + '\'' +
+                ", country='" + country + '\'' +
+                ", address='" + address + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
