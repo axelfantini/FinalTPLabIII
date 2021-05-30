@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+   <children>
+      <TextField fx:id="setupStep3TxtName" layoutX="390.0" layoutY="92.0" promptText="Nombre" />
+      <TextField fx:id="setupStep3TxtDNI" layoutX="390.0" layoutY="136.0" promptText="DNI" />
+      <TextField fx:id="setupStep3TxtCountry" layoutX="390.0" layoutY="177.0" promptText="Pais" />
+      <TextField fx:id="setupStep3TxtAddress" layoutX="390.0" layoutY="220.0" promptText="Dirección" />
+      <PasswordField fx:id="setupStep3TxtPassword" layoutX="390.0" layoutY="265.0" promptText="Contraseña" />
+      <Button fx:id="setupStep3BtnNext" layoutX="465.0" layoutY="311.0" mnemonicParsing="false" onMouseClicked="#toSetupStep4" text="Siguiente -&gt;" />
+      <Label alignment="CENTER" layoutX="382.0" layoutY="39.0" prefHeight="18.0" prefWidth="165.0" text="Crear Recepcionistas" />
+      <Button fx:id="setupStep3BtnAdd" layoutX="361.0" layoutY="310.0" mnemonicParsing="false" onMouseClicked="#createReceptionist" prefHeight="31.0" prefWidth="98.0" text="+ Agregar" />
+      <TableView fx:id="setupStep3TableView" layoutX="24.0" layoutY="15.0" prefHeight="371.0" prefWidth="327.0" visible="false">
+         <columns>
+            <TableColumn editable="false" prefWidth="85.60003662109375" resizable="false" text="Nombre">
+               <cellValueFactory>
+                  <PropertyValueFactory property="name" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn editable="false" prefWidth="67.199951171875" resizable="false" text="DNI">
+               <cellValueFactory>
+                  <PropertyValueFactory property="dni" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn editable="false" prefWidth="68.79998779296875" resizable="false" text="Pais">
+               <cellValueFactory>
+                  <PropertyValueFactory property="country" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn editable="false" prefWidth="107.20001220703125" resizable="false" text="Direccion">
+               <cellValueFactory>
+                  <PropertyValueFactory property="address" />
+               </cellValueFactory>
+            </TableColumn>
+         </columns>
+      </TableView>
+      <Label fx:id="setupStep3LabelError" alignment="CENTER" contentDisplay="CENTER" layoutX="359.0" layoutY="352.0" prefHeight="39.0" prefWidth="206.0" text="ERROR" textFill="RED" visible="false">
+         <font>
+            <Font size="27.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

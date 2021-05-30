@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+   <children>
+      <Label contentDisplay="BOTTOM" layoutX="208.0" layoutY="57.0" text="Bienvenido al Asistente de Hoteles" />
+      <Button fx:id="homeBtnCreate" layoutX="14.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#toSetup" prefHeight="31.0" prefWidth="273.0" text="Quiero crear un hotel nuevo" />
+      <Button fx:id="homeBtnLoad" layoutX="317.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#openFile" text="Quiero cargar la informacion de un hotel" />
+   </children>
+</AnchorPane>

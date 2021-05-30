@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+   <Label layoutX="246.0" layoutY="53.0" text="Creador de hoteles" />
+   <TextField fx:id="setupTxtName" layoutX="220.0" layoutY="113.0" promptText="Nombre" />
+   <TextField fx:id="setupTxtAddress" layoutX="220.0" layoutY="169.0" promptText="Direccion" />
+   <Slider fx:id="setupSliderStars" blockIncrement="1.0" layoutX="226.0" layoutY="234.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+   <Button fx:id="setupBtnCreate" layoutX="231.0" layoutY="284.0" mnemonicParsing="false" onMouseClicked="#createHotel" text="Siguiente paso -&gt;" />
+   <Button fx:id="setupBtnBack" layoutX="32.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#toHome" text="&lt;- Volver" />
+   <Label layoutX="229.0" layoutY="210.0" text="Estrellas" />
+   <Label fx:id="setupLabelError" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="332.0" prefHeight="39.0" prefWidth="574.0" text="ERROR" textFill="RED" visible="false">
+      <font>
+         <Font size="27.0" />
+      </font>
+   </Label>
+</AnchorPane>
