@@ -119,8 +119,8 @@ public class ViewController {
         String password = setupStep2TxtPassword.getText();
         if(checkUser(name, dni, country, address, password, setupStep2LabelError))
         {
-            Employee employee = new Employee(name, dni, country, address, password, true);
-            ErrorResponse response = Main.getActualHotel().createUser(employee);
+            User user = new User(name, dni, country, address, password);
+            ErrorResponse response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
                 toSetupStep3(null);
             else
@@ -141,11 +141,11 @@ public class ViewController {
         String password = setupStep3TxtPassword.getText();
         if(checkUser(name, dni, country, address, password, setupStep3LabelError))
         {
-            Employee employee = new Employee(name, dni, country, address, password, false);
-            ErrorResponse response = Main.getActualHotel().createUser(employee);
+            User user = new User(name, dni, country, address, password);
+            ErrorResponse response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
             {
-                setupStep3TableViewData.add(employee);
+                setupStep3TableViewData.add(user);
                 setupStep3TableView.setItems(FXCollections.observableArrayList(setupStep3TableViewData));
                 setupStep3TableView.setVisible(true);
             }
