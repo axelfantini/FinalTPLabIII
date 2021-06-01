@@ -6,9 +6,8 @@ import interfaces.IBooking;
 import java.util.List;
 import java.util.UUID;
 
-public class User implements IBooking {
+public class User extends BaseObject<String> implements IBooking {
     private String name;
-    private String dni;
     private String country;
     private String address;
     private String password;
@@ -17,7 +16,7 @@ public class User implements IBooking {
 
     public User(String name, String dni, String country, String address, String password) {
         this.name = name;
-        this.dni = dni;
+        this.id = dni;
         this.country = country;
         this.address = address;
         this.password = password;
@@ -44,7 +43,7 @@ public class User implements IBooking {
     }
 
     public String getDni() {
-        return this.dni;
+        return this.id;
     }
 
     public Boolean checkPassword(String password)
@@ -61,7 +60,7 @@ public class User implements IBooking {
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
-                ", dni='" + dni + '\'' +
+                ", dni='" + id + '\'' +
                 ", country='" + country + '\'' +
                 ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
@@ -97,7 +96,8 @@ public class User implements IBooking {
         Booking booking = bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
         if(booking != null)
         {
-            response = bookings.remove(booking);
+            booking.setLogicalDelete(true);
+            response = true;
         }
         return response;
     }

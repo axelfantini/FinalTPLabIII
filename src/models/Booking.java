@@ -3,8 +3,7 @@ package models;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Booking {
-    private UUID id;
+public class Booking extends BaseObject<UUID> {
     private LocalDate startDate;
     private LocalDate expectedFinishDate;
     private LocalDate finishDate;
@@ -17,10 +16,6 @@ public class Booking {
         this.expectedFinishDate = expectedFinishDate;
         this.lateCheckout = lateCheckout;
         this.id = UUID.randomUUID();
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public void setRoomId(Integer roomId) {
