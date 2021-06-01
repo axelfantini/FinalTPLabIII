@@ -1,12 +1,13 @@
 package models;
 
 import enums.RoomStatusEnum;
+import interfaces.IBooking;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Room {
+public class Room implements IBooking {
     private Integer roomNum;
     private RoomStatusEnum status;
     private String statusReason;
@@ -36,6 +37,7 @@ public class Room {
     }
 
     public void addBooking (Booking booking){
+
         this.bookings.add(booking);
     }
 }
