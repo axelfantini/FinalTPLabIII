@@ -19,6 +19,12 @@ public class Booking {
         this.id = UUID.randomUUID();
     }
 
+    public Booking() {}
+
+    public UUID getId() {
+        return id;
+    }
+
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
@@ -40,5 +46,4 @@ public class Booking {
         this.canceled = true;
         this.finishDate = LocalDate.now();
     }
-
 }

@@ -36,8 +36,34 @@ public class Room implements IBooking {
         this.statusReason = statusReason;
     }
 
-    public void addBooking (Booking booking){
-
+    @Override
+    public Booking addBooking(Booking booking) {
         this.bookings.add(booking);
+        return booking;
+    }
+
+    @Override
+    public Booking editBooking(UUID id, Booking values) {
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        if (booking != null){
+            
+        }
+        return booking;
+    }
+
+    @Override
+    public Booking getBooking(UUID id) {
+        return bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public Boolean deleteBooking(UUID id) {
+        Boolean response = false;
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        if (booking != null) {
+            response = true;
+            booking.setLogicalDelete(true);
+        }
+        return response;
     }
 }
