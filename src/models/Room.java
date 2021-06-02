@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Room implements IBooking {
-    private Integer roomNum;
+public class Room extends BaseObject<Integer> implements IBooking {
     private RoomStatusEnum status;
     private String statusReason;
     private List<Booking> bookings = new ArrayList<>();
 
     public Room(Integer roomNum, RoomStatusEnum status, String statusReason) {
-        this.roomNum = roomNum;
+        this.id = roomNum;
         this.status = status;
         this.statusReason = statusReason;
     }
@@ -28,7 +27,7 @@ public class Room implements IBooking {
     }
 
     public Integer getRoomNum() {
-        return this.roomNum;
+        return this.id;
     }
 
     public void setStatus(RoomStatusEnum status, String statusReason) {
@@ -46,7 +45,9 @@ public class Room implements IBooking {
     public Booking editBooking(UUID id, Booking values) {
         Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
         if (booking != null){
-            
+            booking.setStartDate(values.getStartDate());
+            booking.setExpectedFinishDate(values.getExpectedFinishDate());
+            booking.setLateCheckout(values.getLateCheckout());
         }
         return booking;
     }
