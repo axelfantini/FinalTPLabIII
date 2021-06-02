@@ -1,19 +1,19 @@
 package models;
 
 import enums.RoomStatusEnum;
+import interfaces.IBooking;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Room {
-    private Integer roomNum;
+public class Room extends BaseObject<Integer> implements IBooking {
     private RoomStatusEnum status;
     private String statusReason;
     private List<Booking> bookings = new ArrayList<>();
 
     public Room(Integer roomNum, RoomStatusEnum status, String statusReason) {
-        this.roomNum = roomNum;
+        this.id = roomNum;
         this.status = status;
         this.statusReason = statusReason;
     }
@@ -27,7 +27,7 @@ public class Room {
     }
 
     public Integer getRoomNum() {
-        return this.roomNum;
+        return this.id;
     }
 
     public void setStatus(RoomStatusEnum status, String statusReason) {
@@ -35,7 +35,36 @@ public class Room {
         this.statusReason = statusReason;
     }
 
-    public void addBooking (Booking booking){
+    @Override
+    public Booking addBooking(Booking booking) {
         this.bookings.add(booking);
+        return booking;
+    }
+
+    @Override
+    public Booking editBooking(UUID id, Booking values) {
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        if (booking != null){
+            booking.setStartDate(values.getStartDate());
+            booking.setExpectedFinishDate(values.getExpectedFinishDate());
+            booking.setLateCheckout(values.getLateCheckout());
+        }
+        return booking;
+    }
+
+    @Override
+    public Booking getBooking(UUID id) {
+        return bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public Boolean deleteBooking(UUID id) {
+        Boolean response = false;
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        if (booking != null) {
+            response = true;
+            booking.setLogicalDelete(true);
+        }
+        return response;
     }
 }

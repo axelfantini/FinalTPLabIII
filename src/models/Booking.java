@@ -3,8 +3,7 @@ package models;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Booking {
-    private UUID id;
+public class Booking extends BaseObject<UUID> {
     private LocalDate startDate;
     private LocalDate expectedFinishDate;
     private LocalDate finishDate;
@@ -17,6 +16,12 @@ public class Booking {
         this.expectedFinishDate = expectedFinishDate;
         this.lateCheckout = lateCheckout;
         this.id = UUID.randomUUID();
+    }
+
+    public Booking() {}
+
+    public UUID getId() {
+        return id;
     }
 
     public void setRoomId(Integer roomId) {
@@ -35,10 +40,41 @@ public class Booking {
         return finishDate;
     }
 
+    public LocalDate getExpectedFinishDate() {
+        return expectedFinishDate;
+    }
+
+    public Boolean getLateCheckout() {
+        return lateCheckout;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setFinishDate(LocalDate finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setExpectedFinishDate(LocalDate expectedFinishDate) {
+        this.expectedFinishDate = expectedFinishDate;
+    }
+
+    public void setLateCheckout(Boolean lateCheckout) {
+        this.lateCheckout = lateCheckout;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
+    }
+
     public void finish()
     {
         this.canceled = true;
         this.finishDate = LocalDate.now();
     }
-
 }

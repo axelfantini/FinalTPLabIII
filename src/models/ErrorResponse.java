@@ -2,9 +2,18 @@ package models;
 
 import enums.ErrorEnum;
 
-public class ErrorResponse {
+public class ErrorResponse<T> {
     private Boolean success;
     private ErrorEnum error;
+    private T body;
+
+    public T getBody() {
+        return body;
+    }
+
+    public void setBody(T body) {
+        this.body = body;
+    }
 
     public Boolean getSuccess() {
         return success;

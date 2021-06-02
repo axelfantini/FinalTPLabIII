@@ -11,8 +11,7 @@ public class Hotel {
     private String name;
     private String address;
     private Integer stars;
-    private List<Customer> customers = new ArrayList<>();
-    private List<Employee> employees = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
     private List<Booking> bookings = new ArrayList<>();
 
@@ -22,13 +21,14 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public ErrorResponse createRoom(Room room)
+    public ErrorResponse<Room> createRoom(Room room)
     {
-        ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
         if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(room.getRoomNum())))
         {
             rooms.add(room);
             errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
         }
         else
         {
@@ -47,13 +47,9 @@ public class Hotel {
     public ErrorResponse createUser(User user)
     {
         ErrorResponse errorResponse = new ErrorResponse();
-        if(!employees.stream().anyMatch(e -> e.getDni().equals(user.getDni()))
-                && !customers.stream().anyMatch(c -> c.getDni().equals(user.getDni())))
+        if(!users.stream().anyMatch(e -> e.getDni().equals(user.getDni())))
         {
-            if(user instanceof Employee)
-                employees.add((Employee)user);
-            else if(user instanceof Customer)
-                customers.add((Customer)user);
+            users.add(user);
             errorResponse.setSuccess(true);
         }
         else
@@ -71,46 +67,35 @@ public class Hotel {
 
     public void createBooking(String dni, Integer roomNum, Booking booking)
     {
-        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
         Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
-        if(customer != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
+        if(user != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
         {
             booking.setRoomId(room.getRoomNum());
             bookings.add(booking);
             room.addBooking(booking);
-            customer.addBooking(booking);
+            user.addBooking(booking);
             room.setStatus(RoomStatusEnum.OCCUPIED, "OCCUPIED");
         }
     }
 
-    public Boolean employeeLogin(String dni, String password)
+    public Boolean userLogin(String dni, String password)
     {
         Boolean response = false;
-        Employee employee = employees.stream().filter(e -> e.getDni().equals(dni)).findFirst().orElse(null);
-        if(employee != null)
+        User user = users.stream().filter(e -> e.getDni().equals(dni)).findFirst().orElse(null);
+        if(user != null)
         {
-            response = employee.checkPassword(password);
-        }
-        return response;
-    }
-
-    public Boolean customerLogin(String dni, String password)
-    {
-        Boolean response = false;
-        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
-        if(customer != null)
-        {
-            response = customer.checkPassword(password);
+            response = user.checkPassword(password);
         }
         return response;
     }
 
     public void finishBooking(String dni, Integer roomId)
     {
-        Customer customer = customers.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
-        if(customer != null)
+        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        if(user != null)
         {
-            Booking booking = customer.getBookingByRoomId(roomId);
+            Booking booking = user.getBookingByRoomId(roomId);
             if(booking != null)
             {
                 booking.finish();
