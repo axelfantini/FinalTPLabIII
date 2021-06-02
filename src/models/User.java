@@ -2,6 +2,7 @@ package models;
 
 import enums.RoleEnum;
 import interfaces.IBooking;
+import requests.SetUserRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -77,11 +78,7 @@ public class User extends BaseObject<String> implements IBooking {
     public Booking editBooking(UUID id, Booking values) {
         Booking booking = bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
         if(booking != null)
-        {
-            booking.setStartDate(values.getStartDate());
-            booking.setExpectedFinishDate(values.getExpectedFinishDate());
-            booking.setLateCheckout(values.getLateCheckout());
-        }
+            booking.setValues(values);
         return booking;
     }
 
@@ -100,5 +97,12 @@ public class User extends BaseObject<String> implements IBooking {
             response = true;
         }
         return response;
+    }
+
+    public void setValues(SetUserRequest request)
+    {
+        this.name = request.getName();
+        this.address = request.getAddress();
+        this.country = request.getCountry();
     }
 }

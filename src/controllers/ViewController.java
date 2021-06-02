@@ -11,6 +11,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import main.Main;
 import models.*;
+import requests.CreateUserRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public class ViewController {
         String password = setupStep2TxtPassword.getText();
         if(checkUser(name, dni, country, address, password, setupStep2LabelError))
         {
-            User user = new User(name, dni, country, address, password);
+            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password);
             ErrorResponse response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
                 toSetupStep3(null);
@@ -141,11 +142,11 @@ public class ViewController {
         String password = setupStep3TxtPassword.getText();
         if(checkUser(name, dni, country, address, password, setupStep3LabelError))
         {
-            User user = new User(name, dni, country, address, password);
-            ErrorResponse response = Main.getActualHotel().createUser(user);
+            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password);
+            ErrorResponse<User> response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
             {
-                setupStep3TableViewData.add(user);
+                setupStep3TableViewData.add(response.getBody());
                 setupStep3TableView.setItems(FXCollections.observableArrayList(setupStep3TableViewData));
                 setupStep3TableView.setVisible(true);
             }

@@ -77,4 +77,11 @@ public class Booking extends BaseObject<UUID> {
         this.canceled = true;
         this.finishDate = LocalDate.now();
     }
+
+    public void setValues(Booking values)
+    {
+        this.startDate = values.getStartDate();
+        this.expectedFinishDate = values.getExpectedFinishDate();
+        this.lateCheckout = values.getLateCheckout();
+    }
 }
