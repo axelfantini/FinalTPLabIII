@@ -21,13 +21,14 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public ErrorResponse createRoom(Room room)
+    public ErrorResponse<Room> createRoom(Room room)
     {
-        ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
         if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(room.getRoomNum())))
         {
             rooms.add(room);
             errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
         }
         else
         {
