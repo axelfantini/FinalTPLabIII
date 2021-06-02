@@ -7,6 +7,14 @@ public class CreateUserRequest {
     private String address;
     private String password;
 
+    public CreateUserRequest(String name, String dni, String country, String address, String password) {
+        this.dni = dni;
+        this.name = name;
+        this.country = country;
+        this.address = address;
+        this.password = password;
+    }
+
     public String getDni() {
         return dni;
     }

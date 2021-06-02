@@ -6,6 +6,13 @@ public class SetUserRequest {
     private String country;
     private String address;
 
+    public SetUserRequest(String dni, String name, String country, String address) {
+        this.dni = dni;
+        this.name = name;
+        this.country = country;
+        this.address = address;
+    }
+
     public String getDni() {
         return dni;
     }
