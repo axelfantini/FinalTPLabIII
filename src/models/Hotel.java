@@ -2,6 +2,8 @@ package models;
 
 import enums.ErrorEnum;
 import enums.RoomStatusEnum;
+import requests.CreateUserRequest;
+import requests.SetUserRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +46,21 @@ public class Hotel {
         _rooms.forEach(r -> this.createRoom(r));
     }
 
-    public ErrorResponse createUser(User user)
+    public ErrorResponse<User> createUser(CreateUserRequest values)
     {
-        ErrorResponse errorResponse = new ErrorResponse();
-        if(!users.stream().anyMatch(e -> e.getDni().equals(user.getDni())))
+        ErrorResponse<User> errorResponse = new ErrorResponse();
+        if(!users.stream().anyMatch(e -> e.getDni().equals(values.getDni())))
         {
+            User user = new User(
+                    values.getName(),
+                    values.getDni(),
+                    values.getCountry(),
+                    values.getAddress(),
+                    values.getPassword()
+            );
             users.add(user);
             errorResponse.setSuccess(true);
+            errorResponse.setBody(user);
         }
         else
         {
@@ -60,7 +70,60 @@ public class Hotel {
         return errorResponse;
     }
 
-    public void createUserRange(List<User> users)
+    public ErrorResponse<User> editUser(SetUserRequest values)
+    {
+        ErrorResponse<User> errorResponse = new ErrorResponse();
+        User user = users.stream().filter(u -> u.getDni().equals(values.getDni())).findFirst().orElse(null);
+        if(user != null)
+        {
+            user.setValues(values);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(user);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<User> getUser(String dni)
+    {
+        ErrorResponse<User> errorResponse = new ErrorResponse();
+        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        if(user != null)
+        {
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(user);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<User> deleteUser(String dni)
+    {
+        ErrorResponse<User> errorResponse = new ErrorResponse();
+        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        if(user != null)
+        {
+            user.setLogicalDelete(true);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(user);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+        }
+        return errorResponse;
+    }
+
+    public void createUserRange(List<CreateUserRequest> users)
     {
         users.forEach(u -> this.createUser(u));
     }

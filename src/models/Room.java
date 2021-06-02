@@ -44,11 +44,8 @@ public class Room extends BaseObject<Integer> implements IBooking {
     @Override
     public Booking editBooking(UUID id, Booking values) {
         Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
-        if (booking != null){
-            booking.setStartDate(values.getStartDate());
-            booking.setExpectedFinishDate(values.getExpectedFinishDate());
-            booking.setLateCheckout(values.getLateCheckout());
-        }
+        if (booking != null)
+            booking.setValues(values);
         return booking;
     }
 
