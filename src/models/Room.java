@@ -11,6 +11,7 @@ public class Room extends BaseObject<Integer> implements IBooking {
     private RoomStatusEnum status;
     private String statusReason;
     private List<Booking> bookings = new ArrayList<>();
+    private RoomType roomType;
 
     public Room(Integer roomNum, RoomStatusEnum status, String statusReason) {
         this.id = roomNum;
