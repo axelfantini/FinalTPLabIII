@@ -2,6 +2,8 @@ package models;
 
 import enums.ErrorEnum;
 import enums.RoomStatusEnum;
+import requests.CreateBookingRequest;
+import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 import requests.SetUserRequest;
 
@@ -23,11 +25,16 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public ErrorResponse<Room> createRoom(Room room)
+    public ErrorResponse<Room> createRoom(CreateRoomRequest values)
     {
         ErrorResponse<Room> errorResponse = new ErrorResponse<>();
-        if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(room.getRoomNum())))
+        if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(values.getRoomNum())))
         {
+            Room room = new Room(
+                    values.getRoomNum(),
+                    values.getStatus(),
+                    values.getStatusReason()
+            );
             rooms.add(room);
             errorResponse.setSuccess(true);
             errorResponse.setBody(room);
@@ -41,7 +48,22 @@ public class Hotel {
 
     }
 
-    public void createRoomsRange(List<Room> _rooms)
+    public ErrorResponse<Booking> createBooking (CreateBookingRequest values)
+    {
+        ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
+        if((!bookings.stream().anyMatch(b -> b.getRoomId().equals(values.getRoomId()))) &&
+                ((!bookings.stream().anyMatch(b -> b.getStartDate().isAfter(values.getExpectedFinishDate())))
+                        || (!bookings.stream().anyMatch(b -> b.getExpectedFinishDate().isBefore(values.getStartDate()))))){
+            Booking booking = new Booking(
+                    values.getStartDate(),
+                    values.getFinishDate(),
+                    
+            )
+        }
+        return errorResponse;
+    }
+
+    public void createRoomsRange(List<CreateRoomRequest> _rooms)
     {
         _rooms.forEach(r -> this.createRoom(r));
     }
@@ -153,7 +175,7 @@ public class Hotel {
         return response;
     }
 
-    public void finishBooking(String dni, Integer roomId)
+    public void checkout(String dni, Integer roomId)
     {
         User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
         if(user != null)
