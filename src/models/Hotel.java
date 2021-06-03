@@ -18,6 +18,7 @@ public class Hotel {
     private List<User> users = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
     private List<Booking> bookings = new ArrayList<>();
+    private List<RoomType> roomTypes = new ArrayList<>();
 
     public Hotel(String name, String address, Integer stars) {
         this.name = name;

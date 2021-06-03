@@ -1,6 +1,7 @@
 package models;
 
 import requests.SetBookingRequest;
+import enums.BedsEnum;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -12,6 +13,10 @@ public class Booking extends BaseObject<UUID> {
     private Boolean lateCheckout;
     private Boolean canceled;
     private Integer roomId;
+    private Double roomPrice;
+    private BedsEnum bedTypes;
+    private Double extraConsumption;
+    private Double totalPrice;
 
     public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout) {
         this.startDate = startDate;
