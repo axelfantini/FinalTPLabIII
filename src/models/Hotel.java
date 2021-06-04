@@ -9,7 +9,6 @@ import requests.SetUserRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Hotel {
     private String name;
@@ -49,17 +48,24 @@ public class Hotel {
 
     }
 
-    public ErrorResponse<Booking> createBooking (CreateBookingRequest values)
+    public ErrorResponse<Booking> createBooking (CreateBookingRequest values, String dni, Integer roomNum)
     {
+        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
         if((!bookings.stream().anyMatch(b -> b.getRoomId().equals(values.getRoomId()))) &&
                 ((!bookings.stream().anyMatch(b -> b.getStartDate().isAfter(values.getExpectedFinishDate())))
-                        || (!bookings.stream().anyMatch(b -> b.getExpectedFinishDate().isBefore(values.getStartDate()))))){
+                        || (!bookings.stream().anyMatch(b -> b.getExpectedFinishDate().isBefore(values.getStartDate())))))
+        {
             Booking booking = new Booking(
                     values.getStartDate(),
                     values.getFinishDate(),
-                    
-            )
+                    values.getLateCheckout()
+            );
+            bookings.add(booking);
+            room.addBooking(booking);
+            user.addBooking(booking);
+            room.setStatus(RoomStatusEnum.OCCUPIED,"OCCUPIED");
         }
         return errorResponse;
     }

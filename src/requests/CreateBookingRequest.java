@@ -9,14 +9,17 @@ public class CreateBookingRequest {
     private Boolean lateCheckout;
     private Boolean canceled;
     private Integer roomId;
+    private String dni;
 
-    public CreateBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, LocalDate finishDate, Boolean lateCheckout, Boolean canceled, Integer roomId) {
+    public CreateBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, LocalDate finishDate, Boolean lateCheckout, Boolean canceled, Integer roomId, String dni)
+    {
         this.startDate = startDate;
         this.expectedFinishDate = expectedFinishDate;
         this.finishDate = finishDate;
         this.lateCheckout = lateCheckout;
         this.canceled = canceled;
         this.roomId = roomId;
+        this.dni = dni;
     }
 
     public LocalDate getStartDate() {
