@@ -2,8 +2,6 @@ package models;
 
 import enums.RoomStatusEnum;
 import interfaces.IBooking;
-import requests.SetBookingRequest;
-import requests.SetRoomRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +43,7 @@ public class Room extends BaseObject<Integer> implements IBooking {
     }
 
     @Override
-    public Booking editBooking(UUID id, SetBookingRequest values) {
+    public Booking editBooking(UUID id, Booking values) {
         Booking booking = bookings.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
         if (booking != null)
             booking.setValues(values);
@@ -66,10 +64,5 @@ public class Room extends BaseObject<Integer> implements IBooking {
             booking.setLogicalDelete(true);
         }
         return response;
-    }
-
-    public void setValues(SetRoomRequest request){
-        this.status = request.getStatus();
-        this.statusReason = request.getStatusReason();
     }
 }

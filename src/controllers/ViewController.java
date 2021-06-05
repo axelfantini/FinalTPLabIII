@@ -11,7 +11,6 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import main.Main;
 import models.*;
-import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 
 import java.io.IOException;
@@ -167,11 +166,11 @@ public class ViewController {
         RoomStatusEnum status = setupStep4ComboStatus.getValue();
         if(checkRoom(num, reason, status))
         {
-            CreateRoomRequest room = new CreateRoomRequest(new Integer(num), status, reason);
-            ErrorResponse<Room> response = Main.getActualHotel().createRoom(room);
+            Room room = new Room(new Integer(num), status, reason);
+            ErrorResponse response = Main.getActualHotel().createRoom(room);
             if(response.getSuccess())
             {
-                setupStep4TableViewData.add(response.getBody());
+                setupStep4TableViewData.add(room);
                 setupStep4TableView.setItems(FXCollections.observableArrayList(setupStep4TableViewData));
                 setupStep4TableView.setVisible(true);
             }
@@ -182,6 +181,7 @@ public class ViewController {
                 timer(() -> setupStep4LabelError.setVisible(false), 1);
             }
         }
+
     }
 
     private Boolean checkHotel(String name, String address)

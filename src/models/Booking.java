@@ -1,6 +1,5 @@
 package models;
 
-import requests.SetBookingRequest;
 import enums.BedsEnum;
 
 import java.time.LocalDate;
@@ -26,6 +25,10 @@ public class Booking extends BaseObject<UUID> {
     }
 
     public Booking() {}
+
+    public UUID getId() {
+        return id;
+    }
 
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
@@ -81,7 +84,7 @@ public class Booking extends BaseObject<UUID> {
         this.finishDate = LocalDate.now();
     }
 
-    public void setValues(SetBookingRequest values)
+    public void setValues(Booking values)
     {
         this.startDate = values.getStartDate();
         this.expectedFinishDate = values.getExpectedFinishDate();
