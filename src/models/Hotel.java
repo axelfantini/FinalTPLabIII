@@ -2,10 +2,12 @@ package models;
 
 import enums.ErrorEnum;
 import enums.RoomStatusEnum;
-import requests.*;
+import requests.CreateUserRequest;
+import requests.SetUserRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Hotel {
     private String name;
@@ -22,16 +24,11 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public ErrorResponse<Room> createRoom(CreateRoomRequest values)
+    public ErrorResponse<Room> createRoom(Room room)
     {
         ErrorResponse<Room> errorResponse = new ErrorResponse<>();
-        if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(values.getRoomNum())))
+        if(!rooms.stream().anyMatch(r -> r.getRoomNum().equals(room.getRoomNum())))
         {
-            Room room = new Room(
-                    values.getRoomNum(),
-                    values.getStatus(),
-                    values.getStatusReason()
-            );
             rooms.add(room);
             errorResponse.setSuccess(true);
             errorResponse.setBody(room);
@@ -45,29 +42,7 @@ public class Hotel {
 
     }
 
-    public ErrorResponse<Booking> createBooking (CreateBookingRequest values, String dni, Integer roomNum)
-    {
-        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
-        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
-        ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
-        if((!bookings.stream().anyMatch(b -> b.getRoomId().equals(values.getRoomId()))) &&
-                ((!bookings.stream().anyMatch(b -> b.getStartDate().isAfter(values.getExpectedFinishDate())))
-                        || (!bookings.stream().anyMatch(b -> b.getExpectedFinishDate().isBefore(values.getStartDate())))))
-        {
-            Booking booking = new Booking(
-                    values.getStartDate(),
-                    values.getFinishDate(),
-                    values.getLateCheckout()
-            );
-            bookings.add(booking);
-            room.addBooking(booking);
-            user.addBooking(booking);
-            room.setStatus(RoomStatusEnum.OCCUPIED,"OCCUPIED");
-        }
-        return errorResponse;
-    }
-
-    public void createRoomsRange(List<CreateRoomRequest> _rooms)
+    public void createRoomsRange(List<Room> _rooms)
     {
         _rooms.forEach(r -> this.createRoom(r));
     }
@@ -179,7 +154,7 @@ public class Hotel {
         return response;
     }
 
-    public void checkout(String dni, Integer roomId)
+    public void finishBooking(String dni, Integer roomId)
     {
         User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
         if(user != null)
