@@ -2,10 +2,7 @@ package models;
 
 import enums.ErrorEnum;
 import enums.RoomStatusEnum;
-import requests.CreateBookingRequest;
-import requests.CreateRoomRequest;
-import requests.CreateUserRequest;
-import requests.SetUserRequest;
+import requests.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,6 +192,20 @@ public class Hotel {
                 if(room != null)
                     room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
             }
+        }
+    }
+
+    public ErrorResponse<Room> createRoomType(CreateRoomTypeRequest values)
+    {
+        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
+        if(user != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
+        {
+            booking.setRoomId(room.getRoomNum());
+            bookings.add(booking);
+            room.addBooking(booking);
+            user.addBooking(booking);
+            room.setStatus(RoomStatusEnum.OCCUPIED, "OCCUPIED");
         }
     }
 
