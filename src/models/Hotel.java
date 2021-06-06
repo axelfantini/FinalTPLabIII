@@ -98,7 +98,8 @@ public class Hotel {
             Room room = new Room(
                     values.getRoomNum(),
                     values.getStatus(),
-                    values.getStatusReason()
+                    values.getStatusReason(),
+                    values.getRoomType()
             );
             rooms.add(room);
             errorResponse.setSuccess(true);
@@ -261,6 +262,16 @@ public class Hotel {
                     room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
             }
         }
+    }
+
+    public Boolean deleteRoom(Integer roomNum) {
+        Boolean response = false;
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
+        if (room != null) {
+            response = true;
+            room.setLogicalDelete(true);
+        }
+        return response;
     }
 
     @Override
