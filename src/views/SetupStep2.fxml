@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
    <children>
       <TextField fx:id="setupStep2TxtName" layoutX="226.0" layoutY="74.0" promptText="Nombre" />
       <TextField fx:id="setupStep2TxtDNI" layoutX="226.0" layoutY="118.0" promptText="DNI" />
@@ -16,7 +16,7 @@
       <PasswordField fx:id="setupStep2TxtPassword" layoutX="226.0" layoutY="247.0" promptText="Contraseña" />
       <Button fx:id="setupStep2BtnNext" layoutX="252.0" layoutY="295.0" mnemonicParsing="false" onMouseClicked="#createAdmin" text="Siguiente -&gt;" />
       <Label alignment="CENTER" layoutY="14.0" prefHeight="18.0" prefWidth="601.0" text="Crear Admin" />
-      <Label fx:id="setupStep2LabelError" alignment="CENTER" contentDisplay="CENTER" layoutX="-4.0" layoutY="342.0" prefHeight="39.0" prefWidth="602.0" text="ERROR" textFill="RED" visible="false">
+      <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="-4.0" layoutY="342.0" prefHeight="39.0" prefWidth="602.0" text="ERROR" textFill="RED" visible="false">
          <font>
             <Font size="27.0" />
          </font>

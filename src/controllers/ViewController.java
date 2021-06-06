@@ -1,16 +1,22 @@
 package controllers;
 
+import enums.ErrorEnum;
+import enums.RoleEnum;
 import enums.RoomStatusEnum;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import main.Main;
 import models.*;
+import requests.CreateRoomTypeRequest;
 import requests.CreateUserRequest;
 
 import java.io.IOException;
@@ -28,8 +34,7 @@ public class ViewController {
     public Button setupBtnBack;
     public Button setupBtnFileChooser;
     public FileChooser fileChooser = new FileChooser();
-    public Label setupLabelError;
-    public Label setupStep2LabelError;
+    public Label labelError;
     public TextField setupStep2TxtName;
     public TextField setupStep2TxtDNI;
     public TextField setupStep2TxtCountry;
@@ -43,17 +48,24 @@ public class ViewController {
     public PasswordField setupStep3TxtPassword;
     public Button setupStep3BtnNext;
     public Button setupStep3BtnAdd;
-    public TextField setupStep4TxtNum;
-    public TextField setupStep4ComboReason;
-    public ComboBox<RoomStatusEnum> setupStep4ComboStatus;
-    public Button setupStep4BtnEnd;
+    public TextField setupStep4TxtName;
+    public TextField setupStep4TxtCapacity;
+    public TextField setupStep4TxtPrice;
+    public Button setupStep4BtnNext;
     public Button setupStep4BtnAdd;
-    public Label setupStep4LabelError;
-    public TableView<Room> setupStep4TableView;
-    private List<Room> setupStep4TableViewData = new ArrayList<>();
+    public TableView<RoomType> setupStep4TableView;
+    private static List<RoomType> setupStep4TableViewData = new ArrayList<>();
+    public TextField setupStep5TxtNum;
+    public TextField setupStep5ComboReason;
+    public ComboBox<RoomStatusEnum> setupStep5ComboStatus;
+    public ComboBox<RoomType> setupStep5ComboType;
+    public Button setupStep5BtnEnd;
+    public Button setupStep5BtnAdd;
+    public TableView<Room> setupStep5TableView;
+    private List<Room> setupStep5TableViewData = new ArrayList<>();
     public TableView<User> setupStep3TableView;
     private List<User> setupStep3TableViewData = new ArrayList<>();
-    public Label setupStep3LabelError;
+
 
     private void timer(Runnable func, int seconds)
     {
@@ -78,28 +90,89 @@ public class ViewController {
         Main.saveFile(fileChooser);
     }
 
-    public void toSetup(MouseEvent mouseEvent) throws IOException {
-        Main.changeStage("/views/SetupStep1.fxml");
+    private void showError(String text, Integer seconds)
+    {
+        labelError.setText(text);
+        labelError.setVisible(true);
+        timer(() -> labelError.setVisible(false), seconds);
     }
 
-    public void toSetupStep2(MouseEvent mouseEvent) throws IOException {
-        Main.changeStage("/views/SetupStep2.fxml");
+    public void toSetup(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/SetupStep1.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
     }
 
-    public void toSetupStep3(MouseEvent mouseEvent) throws IOException {
-        Main.changeStage("/views/SetupStep3.fxml");
+    public void toSetupStep2(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/SetupStep2.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
     }
 
-    public void toSetupStep4(MouseEvent mouseEvent) throws IOException {
-        Main.changeStage("/views/SetupStep4.fxml");
+    public void toSetupStep3(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/SetupStep3.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
     }
 
-    public void toHome(MouseEvent mouseEvent) throws IOException {
-        Main.changeStage("/views/Home.fxml");
+    public void toSetupStep4(MouseEvent mouseEvent) {
+        try {
+            if(setupStep3TableViewData.size() > 0)
+                Main.changeStage("/views/SetupStep4.fxml");
+            else
+                showError("Debes cargar algun recepcionista", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toSetupStep5(MouseEvent mouseEvent) {
+        try {
+            if(setupStep4TableViewData.size() > 0)
+                Main.changeStage("/views/SetupStep5.fxml");
+            else
+                showError("Debes cargar algun tipo de habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void loadRoomTypes(MouseEvent mouseEvent)
+    {
+        if(setupStep5ComboType.getItems().size()  == 0)
+        {
+            setupStep5ComboType.setConverter(new StringConverter<RoomType>() {
+                @Override
+                public String toString(RoomType roomType) {
+                    return roomType.getName();
+                }
+
+                @Override
+                public RoomType fromString(String string) {
+                    return null;
+                }
+            });
+            setupStep5ComboType.getItems().addAll(setupStep4TableViewData);
+        }
+
+    }
+
+    public void toHome(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/Home.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
     }
 
 
-    public void createHotel(MouseEvent mouseEvent) throws IOException {
+    public void createHotel(MouseEvent mouseEvent) {
         String name = setupTxtName.getText();
         String address = setupTxtAddress.getText();
         Integer stars = (int) Math.round(setupSliderStars.getValue());
@@ -109,40 +182,35 @@ public class ViewController {
             Main.setActualHotel(hotel);
             toSetupStep2(null);
         }
-
     }
 
-    public void createAdmin(MouseEvent mouseEvent) throws IOException {
+    public void createAdmin(MouseEvent mouseEvent) {
         String name = setupStep2TxtName.getText();
         String dni = setupStep2TxtDNI.getText();
         String country = setupStep2TxtCountry.getText();
         String address = setupStep2TxtAddress.getText();
         String password = setupStep2TxtPassword.getText();
-        if(checkUser(name, dni, country, address, password, setupStep2LabelError))
+        if(checkUser(name, dni, country, address, password))
         {
-            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password);
-            ErrorResponse response = Main.getActualHotel().createUser(user);
+            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password, RoleEnum.ADMIN);
+            ErrorResponse<User> response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
                 toSetupStep3(null);
             else
-            {
-                setupStep2LabelError.setText(response.getError().getFancyError());
-                setupStep2LabelError.setVisible(true);
-                timer(() -> setupStep2LabelError.setVisible(false), 1);
-            }
+                showError(response.getError().getFancyError(), 1);
         }
 
     }
 
-    public void createReceptionist(MouseEvent mouseEvent) throws IOException {
+    public void createReceptionist(MouseEvent mouseEvent) {
         String name = setupStep3TxtName.getText();
         String dni = setupStep3TxtDNI.getText();
         String country = setupStep3TxtCountry.getText();
         String address = setupStep3TxtAddress.getText();
         String password = setupStep3TxtPassword.getText();
-        if(checkUser(name, dni, country, address, password, setupStep3LabelError))
+        if(checkUser(name, dni, country, address, password))
         {
-            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password);
+            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password, RoleEnum.RECEPTIONIST);
             ErrorResponse<User> response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
             {
@@ -151,35 +219,48 @@ public class ViewController {
                 setupStep3TableView.setVisible(true);
             }
             else
-            {
-                setupStep3LabelError.setText(response.getError().getFancyError());
-                setupStep3LabelError.setVisible(true);
-                timer(() -> setupStep3LabelError.setVisible(false), 1);
-            }
+                showError(response.getError().getFancyError(), 1);
         }
 
     }
 
-    public void createRoom(MouseEvent mouseEvent) throws IOException {
-        String num = setupStep4TxtNum.getText();
-        String reason = setupStep4ComboReason.getText();
-        RoomStatusEnum status = setupStep4ComboStatus.getValue();
-        if(checkRoom(num, reason, status))
+    public void createRoom(MouseEvent mouseEvent) {
+        String num = setupStep5TxtNum.getText();
+        String reason = setupStep5ComboReason.getText();
+        RoomStatusEnum status = setupStep5ComboStatus.getValue();
+        RoomType roomType = setupStep5ComboType.getValue();
+        if(checkRoom(num, reason, status, roomType))
         {
             Room room = new Room(new Integer(num), status, reason);
             ErrorResponse response = Main.getActualHotel().createRoom(room);
             if(response.getSuccess())
             {
-                setupStep4TableViewData.add(room);
+                setupStep5TableViewData.add(room);
+                setupStep5TableView.setItems(FXCollections.observableArrayList(setupStep5TableViewData));
+                setupStep5TableView.setVisible(true);
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+
+    }
+
+    public void createRoomType(MouseEvent mouseEvent) {
+        String name = setupStep4TxtName.getText();
+        String capacity = setupStep4TxtCapacity.getText();
+        String price = setupStep4TxtPrice.getText();
+        if(checkRoomType(name, capacity, price))
+        {
+            CreateRoomTypeRequest roomType = new CreateRoomTypeRequest(name, new Integer(capacity), new Double(price));
+            ErrorResponse<RoomType> response = Main.getActualHotel().createRoomType(roomType);
+            if(response.getSuccess())
+            {
+                setupStep4TableViewData.add(response.getBody());
                 setupStep4TableView.setItems(FXCollections.observableArrayList(setupStep4TableViewData));
                 setupStep4TableView.setVisible(true);
             }
             else
-            {
-                setupStep4LabelError.setText(response.getError().getFancyError());
-                setupStep4LabelError.setVisible(true);
-                timer(() -> setupStep4LabelError.setVisible(false), 1);
-            }
+                showError(response.getError().getFancyError(), 1);
         }
 
     }
@@ -189,86 +270,94 @@ public class ViewController {
         Boolean response = true;
         if(name.isEmpty())
         {
-            setupLabelError.setText("Debes ingresar un nombre.");
-            setupLabelError.setVisible(true);
-            timer(() -> setupLabelError.setVisible(false), 1);
+            showError("Debes ingresar un nombre.", 1);
             response = false;
         }
         if(address.isEmpty())
         {
-            setupLabelError.setText("Debes ingresar una direccion.");
-            setupLabelError.setVisible(true);
-            timer(() -> setupLabelError.setVisible(false), 1);
+            showError("Debes ingresar un nombre.", 1);
             response = false;
         }
         return response;
     }
 
-    private Boolean checkUser(String name, String dni, String country, String address, String password, Label errorLabel)
+    private Boolean checkUser(String name, String dni, String country, String address, String password)
     {
         Boolean response = true;
         if(name.isEmpty())
         {
-            errorLabel.setText("Debes ingresar un nombre.");
-            errorLabel.setVisible(true);
-            timer(() -> errorLabel.setVisible(false), 1);
+            showError("Debes ingresar un nombre.", 1);
             response = false;
         }
         if(dni.isEmpty())
         {
-            errorLabel.setText("Debes ingresar un DNI.");
-            errorLabel.setVisible(true);
-            timer(() -> errorLabel.setVisible(false), 1);
+            showError("Debes ingresar un DNI.", 1);
             response = false;
         }
         if(country.isEmpty())
         {
-            errorLabel.setText("Debes ingresar un pais.");
-            errorLabel.setVisible(true);
-            timer(() -> errorLabel.setVisible(false), 1);
+            showError("Debes ingresar un pais.", 1);
             response = false;
         }
         if(address.isEmpty())
         {
-            errorLabel.setText("Debes ingresar una direccion.");
-            errorLabel.setVisible(true);
-            timer(() -> errorLabel.setVisible(false), 1);
+            showError("Debes ingresar una direccion.", 1);
             response = false;
         }
         if(password.isEmpty())
         {
-            errorLabel.setText("Debes ingresar una contraseña.");
-            errorLabel.setVisible(true);
-            timer(() -> errorLabel.setVisible(false), 1);
+            showError("Debes ingresar una contraseña.", 1);
             response = false;
         }
         return response;
     }
 
-    private Boolean checkRoom(String num, String reason, RoomStatusEnum status)
+    private Boolean checkRoom(String num, String reason, RoomStatusEnum status, RoomType roomType)
     {
         Boolean response = true;
         if(num.isEmpty())
         {
-            setupStep4LabelError.setText("Debes ingresar un numero de habitacion.");
-            setupStep4LabelError.setVisible(true);
-            timer(() -> setupStep4LabelError.setVisible(false), 1);
+            showError("Debes ingresar un numero de habitacion.", 1);
             response = false;
         }
         if(status == RoomStatusEnum.NOT_AVAILABLE && reason.isEmpty())
         {
-            setupStep4LabelError.setText("Debes ingresar una razon.");
-            setupStep4LabelError.setVisible(true);
-            timer(() -> setupStep4LabelError.setVisible(false), 1);
+            showError("Debes ingresar una razon.", 1);
+            response = false;
+        }
+        if(roomType == null || roomType.getId() == null)
+        {
+            showError("Debes seleccionar un tipo de habitacion.", 1);
+            response = false;
+        }
+        return response;
+    }
+
+    private Boolean checkRoomType(String name, String capacity, String price)
+    {
+        Boolean response = true;
+        if(name.isEmpty())
+        {
+            showError("Debes ingresar un nombre.", 1);
+            response = false;
+        }
+        if(capacity.isEmpty())
+        {
+            showError("Debes ingresar la capacidad.", 1);
+            response = false;
+        }
+        if(price.isEmpty())
+        {
+            showError("Debes ingresar un precio.", 1);
             response = false;
         }
         return response;
     }
 
     public void toggleReason(ActionEvent actionEvent) {
-        if(setupStep4ComboStatus.getValue() == RoomStatusEnum.NOT_AVAILABLE)
-            setupStep4ComboReason.setDisable(false);
+        if(setupStep5ComboStatus.getValue() == RoomStatusEnum.NOT_AVAILABLE)
+            setupStep5ComboReason.setDisable(false);
         else
-            setupStep4ComboReason.setDisable(true);
+            setupStep5ComboReason.setDisable(true);
     }
 }
