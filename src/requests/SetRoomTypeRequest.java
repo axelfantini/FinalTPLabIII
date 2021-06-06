@@ -1,18 +1,22 @@
-package models;
-
-import requests.SetRoomTypeRequest;
+package requests;
 
 import java.util.UUID;
 
-public class RoomType extends BaseObject<UUID> {
+public class SetRoomTypeRequest {
+    private UUID id;
     private String name;
     private int capacity;
     private Double price;
 
-    public RoomType(String name, int capacity, Double price) {
+    public SetRoomTypeRequest(UUID id, String name, int capacity, Double price) {
+        this.id = id;
         this.name = name;
         this.capacity = capacity;
         this.price = price;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
@@ -25,12 +29,5 @@ public class RoomType extends BaseObject<UUID> {
 
     public Double getPrice() {
         return price;
-    }
-
-    public void setValues(SetRoomTypeRequest values)
-    {
-        this.name = values.getName();
-        this.capacity = values.getCapacity();
-        this.price = values.getPrice();
     }
 }

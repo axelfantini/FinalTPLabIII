@@ -2,13 +2,11 @@ package models;
 
 import enums.ErrorEnum;
 import enums.RoomStatusEnum;
-import requests.CreateBookingRequest;
-import requests.CreateRoomRequest;
-import requests.CreateUserRequest;
-import requests.SetUserRequest;
+import requests.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Hotel {
     private String name;
@@ -23,6 +21,73 @@ public class Hotel {
         this.name = name;
         this.address = address;
         this.stars = stars;
+    }
+
+    public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)
+    {
+        ErrorResponse<RoomType> errorResponse = new ErrorResponse();
+        RoomType roomType = new RoomType(
+                values.getName(),
+                values.getCapacity(),
+                values.getPrice()
+        );
+        roomTypes.add(roomType);
+        errorResponse.setSuccess(true);
+        errorResponse.setBody(roomType);
+        return errorResponse;
+    }
+
+    public ErrorResponse<RoomType> getRoomType(UUID roomTypeId)
+    {
+        ErrorResponse<RoomType> errorResponse = new ErrorResponse();
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId)).findFirst().orElse(null);
+        if(roomType != null)
+        {
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(roomType);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOMTYPE_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<RoomType> editRoomType(SetRoomTypeRequest values)
+    {
+        ErrorResponse<RoomType> errorResponse = new ErrorResponse();
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(values.getId())).findFirst().orElse(null);
+        if(roomType != null)
+        {
+            roomType.setValues(values);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(roomType);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOMTYPE_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<RoomType> deleteRoomType(UUID roomTypeId)
+    {
+        ErrorResponse<RoomType> errorResponse = new ErrorResponse();
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId)).findFirst().orElse(null);
+        if(roomType != null)
+        {
+            roomType.setLogicalDelete(true);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(roomType);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOMTYPE_NOT_FOUND);
+        }
+        return errorResponse;
     }
 
     public ErrorResponse<Room> createRoom(CreateRoomRequest values)
