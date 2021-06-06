@@ -264,15 +264,24 @@ public class Hotel {
         }
     }
 
-    public Boolean deleteRoom(Integer roomNum) {
-        Boolean response = false;
+    public ErrorResponse<Room> deleteRoom(Integer roomNum)
+    {
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
         Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
         if (room != null) {
-            response = true;
             room.setLogicalDelete(true);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
         }
-        return response;
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_NOT_FOUND);
+        }
+        return errorResponse;
     }
+
+
 
     @Override
     public String toString() {
