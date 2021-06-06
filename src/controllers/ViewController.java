@@ -17,6 +17,7 @@ import javafx.util.StringConverter;
 import main.Main;
 import models.*;
 import requests.CreateRoomTypeRequest;
+import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 
 import java.io.IOException;
@@ -231,11 +232,11 @@ public class ViewController {
         RoomType roomType = setupStep5ComboType.getValue();
         if(checkRoom(num, reason, status, roomType))
         {
-            Room room = new Room(new Integer(num), status, reason);
-            ErrorResponse response = Main.getActualHotel().createRoom(room);
+            CreateRoomRequest room = new CreateRoomRequest(new Integer(num), status, reason);
+            ErrorResponse<Room> response = Main.getActualHotel().createRoom(room);
             if(response.getSuccess())
             {
-                setupStep5TableViewData.add(room);
+                setupStep5TableViewData.add(response.getBody());
                 setupStep5TableView.setItems(FXCollections.observableArrayList(setupStep5TableViewData));
                 setupStep5TableView.setVisible(true);
             }
@@ -262,7 +263,6 @@ public class ViewController {
             else
                 showError(response.getError().getFancyError(), 1);
         }
-
     }
 
     private Boolean checkHotel(String name, String address)

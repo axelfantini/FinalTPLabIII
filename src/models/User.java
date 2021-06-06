@@ -2,6 +2,7 @@ package models;
 
 import enums.RoleEnum;
 import interfaces.IBooking;
+import requests.SetBookingRequest;
 import requests.SetUserRequest;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class User extends BaseObject<String> implements IBooking {
     }
 
     @Override
-    public Booking editBooking(UUID id, Booking values) {
+    public Booking editBooking(UUID id, SetBookingRequest values) {
         Booking booking = bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
         if(booking != null)
             booking.setValues(values);
