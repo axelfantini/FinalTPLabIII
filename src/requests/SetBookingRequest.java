@@ -1,5 +1,7 @@
 package requests;
 
+import enums.BedsEnum;
+
 import java.time.LocalDate;
 
 public class SetBookingRequest {
@@ -9,8 +11,13 @@ public class SetBookingRequest {
     private Boolean lateCheckout;
     private Boolean canceled;
     private Integer roomId;
+    private Double roomPrice;
+    private BedsEnum bedTypes;
+    private Double extraConsumption;
+    private Double totalPrice;
 
-    public SetBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, LocalDate finishDate, Boolean lateCheckout, Boolean canceled, Integer roomId) {
+    public SetBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, LocalDate finishDate, Boolean lateCheckout,
+                             Boolean canceled, Integer roomId, Double roomPrice, BedsEnum bedTypes, Double extraConsumption) {
         this.startDate = startDate;
         this.expectedFinishDate = expectedFinishDate;
         this.finishDate = finishDate;
@@ -30,4 +37,20 @@ public class SetBookingRequest {
     public Boolean getCanceled() { return canceled; }
 
     public Integer getRoomId() { return roomId; }
+
+    public Double getRoomPrice() {
+        return roomPrice;
+    }
+
+    public BedsEnum getBedTypes() {
+        return bedTypes;
+    }
+
+    public Double getExtraConsumption() {
+        return extraConsumption;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
 }
