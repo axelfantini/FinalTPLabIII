@@ -15,10 +15,11 @@ public class Room extends BaseObject<Integer> implements IBooking {
     private List<Booking> bookings = new ArrayList<>();
     private RoomType roomType;
 
-    public Room(Integer roomNum, RoomStatusEnum status, String statusReason) {
+    public Room(Integer roomNum, RoomStatusEnum status, String statusReason, RoomType roomType) {
         this.id = roomNum;
         this.status = status;
         this.statusReason = statusReason;
+        this.roomType = roomType;
     }
 
     public RoomStatusEnum getStatus() {
@@ -31,6 +32,10 @@ public class Room extends BaseObject<Integer> implements IBooking {
 
     public Integer getRoomNum() {
         return this.id;
+    }
+
+    public RoomType getRoomType() {
+        return this.roomType;
     }
 
     public void setStatus(RoomStatusEnum status, String statusReason) {
@@ -71,5 +76,6 @@ public class Room extends BaseObject<Integer> implements IBooking {
     public void setValues(SetRoomRequest request){
         this.status = request.getStatus();
         this.statusReason = request.getStatusReason();
+        this.roomType = request.getRoomType();
     }
 }

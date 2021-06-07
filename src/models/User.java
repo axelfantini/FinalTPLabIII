@@ -100,6 +100,8 @@ public class User extends BaseObject<String> implements IBooking {
         return response;
     }
 
+
+
     public void setValues(SetUserRequest request)
     {
         this.name = request.getName();

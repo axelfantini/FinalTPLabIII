@@ -98,7 +98,8 @@ public class Hotel {
             Room room = new Room(
                     values.getRoomNum(),
                     values.getStatus(),
-                    values.getStatusReason()
+                    values.getStatusReason(),
+                    values.getRoomType()
             );
             rooms.add(room);
             errorResponse.setSuccess(true);
@@ -262,6 +263,25 @@ public class Hotel {
             }
         }
     }
+
+    public ErrorResponse<Room> deleteRoom(Integer roomNum)
+    {
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
+        if (room != null) {
+            room.setLogicalDelete(true);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
+
 
     @Override
     public String toString() {
