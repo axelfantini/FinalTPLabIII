@@ -5,7 +5,8 @@ public enum ErrorEnum {
     ROOM_WITH_SAME_NUM ("Ya existe una habitacion con ese numero"),
     USER_NOT_FOUND ("No existe ese usuario"),
     VIEW_NOT_FOUND ("Vista no encontrada"),
-    ROOMTYPE_NOT_FOUND ("No existe ese tipo de habitacion");
+    ROOMTYPE_NOT_FOUND ("No existe ese tipo de habitacion"),
+    ROOM_NOT_FOUND ("No existe la habitación");
 
     private final String fancyError;
 
