@@ -125,8 +125,11 @@ public class Hotel {
         {
             Booking booking = new Booking(
                     values.getStartDate(),
-                    values.getFinishDate(),
-                    values.getLateCheckout()
+                    values.getExpectedFinishDate(),
+                    values.getLateCheckout(),
+                    values.getRoomPrice(),
+                    values.getBedTypes(),
+                    values.getRoomId()
             );
             bookings.add(booking);
             room.addBooking(booking);

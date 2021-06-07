@@ -15,14 +15,17 @@ public class Booking extends BaseObject<UUID> {
     private Integer roomId;
     private Double roomPrice;
     private BedsEnum bedTypes;
-    private Double extraConsumption;
+    private Double extraConsumption = 0.0;
     private Double totalPrice;
 
-    public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout) {
+    public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout, Double roomPrice, BedsEnum bedTypes, Integer roomNum) {
         this.startDate = startDate;
         this.expectedFinishDate = expectedFinishDate;
         this.lateCheckout = lateCheckout;
+        this.roomId = roomNum;
         this.id = UUID.randomUUID();
+        this.roomPrice = roomPrice;
+        this.bedTypes = bedTypes;
     }
 
     public Booking() {}
@@ -75,6 +78,38 @@ public class Booking extends BaseObject<UUID> {
         this.canceled = canceled;
     }
 
+    public Double getRoomPrice() {
+        return roomPrice;
+    }
+
+    public void setRoomPrice(Double roomPrice) {
+        this.roomPrice = roomPrice;
+    }
+
+    public BedsEnum getBedTypes() {
+        return bedTypes;
+    }
+
+    public void setBedTypes(BedsEnum bedTypes) {
+        this.bedTypes = bedTypes;
+    }
+
+    public Double getExtraConsumption() {
+        return extraConsumption;
+    }
+
+    public void setExtraConsumption(Double extraConsumption) {
+        this.extraConsumption = extraConsumption;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public void finish()
     {
         this.canceled = true;
@@ -86,5 +121,7 @@ public class Booking extends BaseObject<UUID> {
         this.startDate = values.getStartDate();
         this.expectedFinishDate = values.getExpectedFinishDate();
         this.lateCheckout = values.getLateCheckout();
+        this.roomPrice = values.getRoomPrice();
+        this.bedTypes = values.getBedTypes();
     }
 }
