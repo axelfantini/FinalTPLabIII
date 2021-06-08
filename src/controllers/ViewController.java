@@ -4,12 +4,17 @@ import enums.ErrorEnum;
 import enums.RoleEnum;
 import enums.RoomStatusEnum;
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -36,6 +41,7 @@ public class ViewController {
     public Button setupBtnFileChooser;
     public FileChooser fileChooser = new FileChooser();
     public Label labelError;
+    public Pane paneLabelError;
     public TextField setupStep2TxtName;
     public TextField setupStep2TxtDNI;
     public TextField setupStep2TxtCountry;
@@ -63,10 +69,35 @@ public class ViewController {
     public Button setupStep5BtnEnd;
     public Button setupStep5BtnAdd;
     public TableView<Room> setupStep5TableView;
+    public TableColumn setupStep5TableColumnRoomType;
+    public TableColumn setupStep5TableColumnStatus;
     private List<Room> setupStep5TableViewData = new ArrayList<>();
     public TableView<User> setupStep3TableView;
     private List<User> setupStep3TableViewData = new ArrayList<>();
 
+    private Boolean isInt(String string)
+    {
+        Boolean response;
+        try {
+            Integer d = Integer.parseInt(string);
+            response = true;
+        } catch (NumberFormatException e) {
+            response = false;
+        }
+        return response;
+    }
+
+    private Boolean isDouble(String string)
+    {
+        Boolean response;
+        try {
+            Double d = Double.parseDouble(string);
+            response = true;
+        } catch (NumberFormatException e) {
+            response = false;
+        }
+        return response;
+    }
 
     private void timer(Runnable func, int seconds)
     {
@@ -94,8 +125,11 @@ public class ViewController {
     private void showError(String text, Integer seconds)
     {
         labelError.setText(text);
+        paneLabelError.setVisible(true);
         labelError.setVisible(true);
-        timer(() -> labelError.setVisible(false), seconds);
+        timer(() -> {
+            labelError.setVisible(false); paneLabelError.setVisible(false);
+        }, seconds);
     }
 
     public void toSetup(MouseEvent mouseEvent){
@@ -164,6 +198,51 @@ public class ViewController {
 
     }
 
+    public void loadRoomStatus(MouseEvent mouseEvent)
+    {
+        if(setupStep5ComboStatus.getItems().size()  == 0)
+        {
+            setupStep5ComboStatus.setConverter(new StringConverter<RoomStatusEnum>() {
+                @Override
+                public String toString(RoomStatusEnum roomStatusEnum) {
+                    return roomStatusEnum.getName();
+                }
+
+                @Override
+                public RoomStatusEnum fromString(String string) {
+                    return null;
+                }
+            });
+            setupStep5ComboStatus.getItems().addAll(
+                    RoomStatusEnum.NOT_AVAILABLE,
+                    RoomStatusEnum.OCCUPIED,
+                    RoomStatusEnum.UNOCCUPIED);
+        }
+
+    }
+
+    public void loadTableViewsStep5()
+    {
+        setupStep5TableColumnRoomType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomType>, ObservableValue<String>>) p -> {
+            // p.getValue() returns the PersonType instance for a particular TableView row
+            if (p.getValue() != null && p.getValue().getRoomType() != null) {
+                return new SimpleStringProperty(p.getValue().getRoomType().getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+        setupStep5TableColumnStatus.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomStatusEnum>, ObservableValue<String>>) p -> {
+            // p.getValue() returns the PersonType instance for a particular TableView row
+            if (p.getValue() != null && p.getValue().getStatus() != null) {
+                return new SimpleStringProperty(p.getValue().getStatus().getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+    }
+
+
+
     public void toHome(MouseEvent mouseEvent){
         try {
             Main.changeStage("/views/Home.fxml");
@@ -226,13 +305,15 @@ public class ViewController {
     }
 
     public void createRoom(MouseEvent mouseEvent) {
+        loadTableViewsStep5();
+
         String num = setupStep5TxtNum.getText();
         String reason = setupStep5ComboReason.getText();
         RoomStatusEnum status = setupStep5ComboStatus.getValue();
         RoomType roomType = setupStep5ComboType.getValue();
         if(checkRoom(num, reason, status, roomType))
         {
-            CreateRoomRequest room = new CreateRoomRequest(new Integer(num), status, reason);
+            CreateRoomRequest room = new CreateRoomRequest(new Integer(num), status, reason, roomType);
             ErrorResponse<Room> response = Main.getActualHotel().createRoom(room);
             if(response.getSuccess())
             {
@@ -320,6 +401,11 @@ public class ViewController {
             showError("Debes ingresar un numero de habitacion.", 1);
             response = false;
         }
+        if(!isInt(num))
+        {
+            showError("El numero de habitacion no es valido.", 1);
+            response = false;
+        }
         if(status == RoomStatusEnum.NOT_AVAILABLE && reason.isEmpty())
         {
             showError("Debes ingresar una razon.", 1);
@@ -346,9 +432,19 @@ public class ViewController {
             showError("Debes ingresar la capacidad.", 1);
             response = false;
         }
+        if(!isInt(capacity))
+        {
+            showError("La capacidad no es valida.", 1);
+            response = false;
+        }
         if(price.isEmpty())
         {
             showError("Debes ingresar un precio.", 1);
+            response = false;
+        }
+        if(!isDouble(price))
+        {
+            showError("El precio no es valido.", 1);
             response = false;
         }
         return response;

@@ -22,7 +22,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/views/Home.fxml"));
         primaryStage.setTitle("Hotel Assistant");
-        primaryStage.setScene(new Scene(root, 1280, 720));
+        primaryStage.setScene(new Scene(root, 879, 586));
         primaryStage.show();
         this.primaryStage = primaryStage;
     }
@@ -32,7 +32,7 @@ public class Main extends Application {
     }
     public static void changeStage(String stage) throws IOException {
         Parent root = FXMLLoader.load(Main.class.getResource(stage));
-        primaryStage.setScene(new Scene(root, 1280, 720));
+        primaryStage.setScene(new Scene(root, 879, 586));
     }
 
     public static void openFile(FileChooser fileChooser)
