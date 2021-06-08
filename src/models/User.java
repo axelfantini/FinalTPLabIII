@@ -16,15 +16,16 @@ public class User extends BaseObject<String> implements IBooking {
     private String country;
     private String address;
     private String password;
-    private RoleEnum role = RoleEnum.USER;
+    private RoleEnum role;
     private List<Booking> bookings;
 
-    public User(String name, String dni, String country, String address, String password) {
+    public User(String name, String dni, String country, String address, String password, RoleEnum role) {
         this.name = name;
         this.id = dni;
         this.country = country;
         this.address = address;
         this.password = password;
+        this.role = role;
     }
 
     public RoleEnum getRole() {

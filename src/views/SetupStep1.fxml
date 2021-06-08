@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
-   <Label layoutX="246.0" layoutY="53.0" text="Creador de hoteles" />
-   <TextField fx:id="setupTxtName" layoutX="220.0" layoutY="113.0" promptText="Nombre" />
-   <TextField fx:id="setupTxtAddress" layoutX="220.0" layoutY="169.0" promptText="Direccion" />
-   <Slider fx:id="setupSliderStars" blockIncrement="1.0" layoutX="226.0" layoutY="234.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
-   <Button fx:id="setupBtnCreate" layoutX="231.0" layoutY="284.0" mnemonicParsing="false" onMouseClicked="#createHotel" text="Siguiente paso -&gt;" />
-   <Button fx:id="setupBtnBack" layoutX="32.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#toHome" text="&lt;- Volver" />
-   <Label layoutX="229.0" layoutY="210.0" text="Estrellas" />
-   <Label fx:id="setupLabelError" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="332.0" prefHeight="39.0" prefWidth="574.0" text="ERROR" textFill="RED" visible="false">
+<AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+   <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@img/bg-setup1.jpg" />
+      </image>
+      <viewport>
+         <Rectangle2D />
+      </viewport>
+   </ImageView>
+   <Pane layoutX="122.0" layoutY="151.0" opacity="0.93" prefHeight="361.0" prefWidth="306.0" style="-fx-background-color: white;" />
+   <Button fx:id="setupBtnBack" layoutX="23.0" layoutY="36.0" mnemonicParsing="false" onMouseClicked="#toHome" text="&lt;- Volver">
       <font>
-         <Font size="27.0" />
+         <Font size="18.0" />
+      </font></Button>
+   <Pane fx:id="paneLabelError" layoutX="30.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="490.0" style="-fx-background-color: red;" visible="false" />
+   <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="36.0" layoutY="524.0" prefHeight="46.0" prefWidth="478.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
+      <font>
+         <Font size="15.0" />
       </font>
    </Label>
+   <Label alignment="CENTER" layoutX="175.0" layoutY="190.0" prefHeight="46.0" prefWidth="199.0" text="Crear Hotel" textAlignment="CENTER">
+      <font>
+         <Font size="31.0" />
+      </font>
+   </Label>
+   <TextField fx:id="setupTxtName" layoutX="204.0" layoutY="260.0" prefHeight="25.0" prefWidth="140.0" promptText="Nombre" />
+   <TextField fx:id="setupTxtAddress" layoutX="204.0" layoutY="311.0" prefHeight="25.0" prefWidth="140.0" promptText="Direccion" />
+   <Slider fx:id="setupSliderStars" blockIncrement="1.0" layoutX="204.0" layoutY="385.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+   <Label layoutX="210.0" layoutY="354.0" text="Estrellas" />
+   <Button fx:id="setupBtnCreate" layoutX="204.0" layoutY="440.0" mnemonicParsing="false" onMouseClicked="#createHotel" prefHeight="25.0" prefWidth="140.0" styleClass="primary" text="Siguiente paso -&gt;" />
 </AnchorPane>
