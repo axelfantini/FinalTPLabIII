@@ -2,11 +2,14 @@ package models;
 
 import enums.RoleEnum;
 import interfaces.IBooking;
+import requests.GetUserBookingRequest;
 import requests.SetBookingRequest;
 import requests.SetUserRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class User extends BaseObject<String> implements IBooking {
     private String name;
@@ -100,7 +103,18 @@ public class User extends BaseObject<String> implements IBooking {
         return response;
     }
 
-
+    public List<Booking> getBookings(GetUserBookingRequest request) {
+        List<Booking> bookingList;
+//        if(request.getSearch() != null){
+//            return bookings.stream().filter(b -> b.);
+//        }else
+        if(request.getFinished() != null){
+            bookingList = bookings.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+        }else {
+            bookingList = bookings;
+        }
+        return bookingList;
+    }
 
     public void setValues(SetUserRequest request)
     {

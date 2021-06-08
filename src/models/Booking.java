@@ -12,6 +12,7 @@ public class Booking extends BaseObject<UUID> {
     private LocalDate finishDate;
     private Boolean lateCheckout;
     private Boolean canceled;
+    private Boolean finished;
     private Integer roomId;
     private Double roomPrice;
     private BedsEnum bedTypes;
@@ -56,6 +57,10 @@ public class Booking extends BaseObject<UUID> {
 
     public Boolean getCanceled() {
         return canceled;
+    }
+
+    public Boolean getFinished() {
+        return finished;
     }
 
     public void setFinishDate(LocalDate finishDate) {
