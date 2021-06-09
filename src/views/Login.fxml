@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+    <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@img/bg-login.jpg" />
+        </image>
+        <viewport>
+            <Rectangle2D />
+        </viewport>
+    </ImageView>
+   <Pane layoutX="461.0" layoutY="140.0" opacity="0.93" prefHeight="306.0" prefWidth="298.0" style="-fx-background-color: white;" />
+   <Label fx:id="loginLabelWelcome" alignment="CENTER" layoutX="499.0" layoutY="156.0" prefHeight="92.0" prefWidth="222.0" text="Bienvenido a |Hotel|" textAlignment="CENTER" wrapText="true">
+      <font>
+         <Font size="31.0" />
+      </font>
+   </Label>
+   <TextField fx:id="loginTxtDni" layoutX="535.0" layoutY="285.0" prefWidth="150.0" promptText="DNI" />
+   <Button fx:id="loginBtn" layoutX="565.0" layoutY="379.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" styleClass="primary" text="Entrar" />
+   <PasswordField fx:id="loginTxtPassword" layoutX="535.0" layoutY="328.0" prefWidth="150.0" promptText="Contraseña" />
+   <ImageView fx:id="loginStar1" fitHeight="48.0" fitWidth="48.0" layoutX="457.0" layoutY="454.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+         <Image url="@img/star.png" />
+      </image>
+   </ImageView>
+   <ImageView fx:id="loginStar2" fitHeight="48.0" fitWidth="48.0" layoutX="523.0" layoutY="454.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+         <Image url="@img/star.png" />
+      </image>
+   </ImageView>
+   <ImageView fx:id="loginStar3" fitHeight="48.0" fitWidth="48.0" layoutX="592.0" layoutY="454.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+         <Image url="@img/star.png" />
+      </image>
+   </ImageView>
+   <ImageView fx:id="loginStar4" fitHeight="48.0" fitWidth="48.0" layoutX="658.0" layoutY="454.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+         <Image url="@img/star.png" />
+      </image>
+   </ImageView>
+   <ImageView fx:id="loginStar5" fitHeight="48.0" fitWidth="48.0" layoutX="717.0" layoutY="454.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+         <Image url="@img/star.png" />
+      </image>
+   </ImageView>
+   <Pane fx:id="paneLabelError" layoutX="450.0" layoutY="50.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />
+   <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="461.0" layoutY="51.0" prefHeight="46.0" prefWidth="298.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
+      <font>
+         <Font size="15.0" />
+      </font>
+   </Label>
+</AnchorPane>

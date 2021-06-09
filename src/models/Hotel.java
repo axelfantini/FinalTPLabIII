@@ -25,6 +25,14 @@ public class Hotel {
         this.stars = stars;
     }
 
+    public Integer getStars() {
+        return stars;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)
     {
         ErrorResponse<RoomType> errorResponse = new ErrorResponse();
