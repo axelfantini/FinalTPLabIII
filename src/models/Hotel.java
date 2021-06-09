@@ -1,9 +1,11 @@
 package models;
 
 import enums.ErrorEnum;
+import enums.RoleEnum;
 import enums.RoomStatusEnum;
 import requests.*;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -154,7 +156,8 @@ public class Hotel {
                     values.getDni(),
                     values.getCountry(),
                     values.getAddress(),
-                    values.getPassword()
+                    values.getPassword(),
+                    values.getRole()
             );
             users.add(user);
             errorResponse.setSuccess(true);
@@ -164,6 +167,24 @@ public class Hotel {
         {
             errorResponse.setSuccess(false);
             errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<User> setUserRole(String dni, RoleEnum role)
+    {
+        ErrorResponse<User> errorResponse = new ErrorResponse();
+        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        if(user != null)
+        {
+            user.setRole(role);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(user);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
         }
         return errorResponse;
     }
@@ -181,7 +202,7 @@ public class Hotel {
         else
         {
             errorResponse.setSuccess(false);
-            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+            errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
         }
         return errorResponse;
     }
@@ -198,7 +219,7 @@ public class Hotel {
         else
         {
             errorResponse.setSuccess(false);
-            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+            errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
         }
         return errorResponse;
     }
@@ -216,7 +237,7 @@ public class Hotel {
         else
         {
             errorResponse.setSuccess(false);
-            errorResponse.setError(ErrorEnum.USER_WITH_SAME_DNI);
+            errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
         }
         return errorResponse;
     }

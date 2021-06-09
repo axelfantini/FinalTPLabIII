@@ -10,6 +10,7 @@ public class RoomType extends BaseObject<UUID> {
     private Double price;
 
     public RoomType(String name, int capacity, Double price) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.capacity = capacity;
         this.price = price;

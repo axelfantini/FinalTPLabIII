@@ -1,51 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import enums.*?>
-<?import javafx.collections.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
-   <children>
-      <TextField fx:id="setupStep4TxtNum" layoutX="378.0" layoutY="149.0" promptText="Num. habitacion" />
-      <TextField fx:id="setupStep4ComboReason" disable="true" layoutX="378.0" layoutY="234.0" promptText="Razon del Estado" />
-      <Button fx:id="setupStep4BtnEnd" layoutX="455.0" layoutY="284.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="82.0" text="Terminar" />
-      <Label alignment="CENTER" layoutX="344.0" layoutY="89.0" prefHeight="18.0" prefWidth="221.0" text="Crear Recepcionistas" />
-      <Button fx:id="setupStep4BtnAdd" layoutX="367.0" layoutY="283.0" mnemonicParsing="false" onMouseClicked="#createRoom" prefHeight="26.0" prefWidth="82.0" text="+ Agregar" />
-      <ComboBox fx:id="setupStep4ComboStatus" layoutX="378.0" layoutY="189.0" onAction="#toggleReason" prefWidth="150.0" promptText="Estado de habitacion" visibleRowCount="3">
-          <items>
-              <FXCollections fx:factory="observableArrayList">
-                  <RoomStatusEnum fx:value="OCCUPIED" />
-                  <RoomStatusEnum fx:value="UNOCCUPIED" />
-                  <RoomStatusEnum fx:value="NOT_AVAILABLE" />
-              </FXCollections>
-          </items>
-      </ComboBox>
-      <TableView fx:id="setupStep4TableView" layoutX="14.0" layoutY="9.0" prefHeight="382.0" prefWidth="329.0" visible="false">
-        <columns>
-            <TableColumn prefWidth="52.79998779296875" text="Num.">
-                <cellValueFactory>
-                    <PropertyValueFactory property="roomNum" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn prefWidth="136.79998779296875" text="Estado">
-                <cellValueFactory>
-                    <PropertyValueFactory property="status" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn prefWidth="141.60003662109375" text="Razon">
-                <cellValueFactory>
-                    <PropertyValueFactory property="statusReason" />
-                </cellValueFactory>
-            </TableColumn>
+<AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+    <children>
+        <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@img/bg-setup4.jpg" />
+            </image>
+            <viewport>
+                <Rectangle2D />
+            </viewport>
+        </ImageView>
+        <TableView fx:id="setupStep4TableView" layoutX="42.0" layoutY="49.0" opacity="0.93" prefHeight="487.0" prefWidth="327.0" visible="false">
+            <columns>
+                <TableColumn editable="false" prefWidth="135.20001220703125" text="Nombre">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" prefWidth="95.20001220703125" text="Capacidad">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="capacity" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" prefWidth="104.0" text="Precio">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="price" />
+                    </cellValueFactory>
+                </TableColumn>
             </columns>
-      </TableView>
-      <Label fx:id="setupStep4LabelError" alignment="CENTER" contentDisplay="CENTER" layoutX="360.0" layoutY="339.0" prefHeight="39.0" prefWidth="186.0" text="ERROR" textFill="RED" visible="false">
+        </TableView>
+      <Pane layoutX="558.0" layoutY="119.0" opacity="0.93" prefHeight="347.0" prefWidth="298.0" style="-fx-background-color: white;" />
+      <Pane fx:id="paneLabelError" layoutX="547.0" layoutY="504.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />
+      <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="558.0" layoutY="504.0" prefHeight="46.0" prefWidth="298.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
          <font>
-            <Font size="27.0" />
+            <Font size="15.0" />
          </font>
       </Label>
-   </children>
+        <TextField fx:id="setupStep4TxtName" layoutX="630.0" layoutY="271.0" prefWidth="151.0" promptText="Nombre" />
+      <TextField fx:id="setupStep4TxtCapacity" layoutX="631.0" layoutY="311.0" prefWidth="151.0" promptText="Capacidad" />
+        <TextField fx:id="setupStep4TxtPrice" layoutX="631.0" layoutY="351.0" prefWidth="151.0" promptText="Precio" />
+        <Button fx:id="setupStep4BtnNext" layoutX="719.0" layoutY="405.0" mnemonicParsing="false" onMouseClicked="#toSetupStep5" prefHeight="31.0" prefWidth="98.0" styleClass="primary" text="Siguiente -&gt;" />
+        <Label alignment="CENTER" layoutX="596.0" layoutY="145.0" prefHeight="93.0" prefWidth="221.0" text="Crear Tipos de Habitaciones" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Label>
+        <Button fx:id="setupStep4BtnAdd" layoutX="596.0" layoutY="405.0" mnemonicParsing="false" onMouseClicked="#createRoomType" prefHeight="31.0" prefWidth="98.0" styleClass="success" text="+ Agregar" />
+    </children>
 </AnchorPane>
