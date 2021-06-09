@@ -289,6 +289,7 @@ public class Hotel {
             if(booking != null)
             {
                 booking.finish();
+                booking.setTotalPrice(booking.getTotalPrice());
                 Room room = rooms.stream().filter(c -> c.getRoomNum().equals(roomId)).findFirst().orElse(null);
                 if(room != null)
                     room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");

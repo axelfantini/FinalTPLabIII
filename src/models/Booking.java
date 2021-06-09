@@ -4,6 +4,7 @@ import requests.SetBookingRequest;
 import enums.BedsEnum;
 
 import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.UUID;
 
 public class Booking extends BaseObject<UUID> {
@@ -16,7 +17,7 @@ public class Booking extends BaseObject<UUID> {
     private Integer roomId;
     private Double roomPrice;
     private BedsEnum bedTypes;
-    private Double extraConsumption = 0.0;
+    private Double extraConsumption;
     private Double totalPrice;
 
     public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout, Double roomPrice, BedsEnum bedTypes, Integer roomNum) {
@@ -112,13 +113,16 @@ public class Booking extends BaseObject<UUID> {
     }
 
     public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+        this.totalPrice = roomPrice*DAYS.between(this.startDate,this.finishDate)+extraConsumption;
     }
 
     public void finish()
     {
-        this.canceled = true;
         this.finishDate = LocalDate.now();
+        if (this.finishDate.isBefore(this.startDate))
+            this.canceled = true;
+        else if (this.finishDate.equals(this.expectedFinishDate))
+            this.finished = true;
     }
 
     public void setValues(SetBookingRequest values)
