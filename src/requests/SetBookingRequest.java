@@ -26,31 +26,53 @@ public class SetBookingRequest {
         this.roomId = roomId;
     }
 
-    public LocalDate getStartDate() { return startDate; }
+    public LocalDate getStartDate()
+    {
+        return startDate;
+    }
 
-    public LocalDate getExpectedFinishDate() { return expectedFinishDate; }
+    public LocalDate getExpectedFinishDate()
+    {
+        return expectedFinishDate;
+    }
 
-    public LocalDate getFinishDate() { return finishDate; }
+    public LocalDate getFinishDate()
+    {
+        return finishDate;
+    }
 
-    public Boolean getLateCheckout() { return lateCheckout; }
+    public Boolean getLateCheckout()
+    {
+        return lateCheckout;
+    }
 
-    public Boolean getCanceled() { return canceled; }
+    public Boolean getCanceled()
+    {
+        return canceled;
+    }
 
-    public Integer getRoomId() { return roomId; }
+    public Integer getRoomId()
+    {
+        return roomId;
+    }
 
-    public Double getRoomPrice() {
+    public Double getRoomPrice()
+    {
         return roomPrice;
     }
 
-    public BedsEnum getBedTypes() {
+    public BedsEnum getBedTypes()
+    {
         return bedTypes;
     }
 
-    public Double getExtraConsumption() {
+    public Double getExtraConsumption()
+    {
         return extraConsumption;
     }
 
-    public Double getTotalPrice() {
+    public Double getTotalPrice()
+    {
         return totalPrice;
     }
 }
