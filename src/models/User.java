@@ -19,7 +19,8 @@ public class User extends BaseObject<String> implements IBooking {
     private RoleEnum role = RoleEnum.USER;
     private List<Booking> bookings;
 
-    public User(String name, String dni, String country, String address, String password) {
+    public User(String name, String dni, String country, String address, String password)
+    {
         this.name = name;
         this.id = dni;
         this.country = country;
@@ -62,7 +63,8 @@ public class User extends BaseObject<String> implements IBooking {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "User{" +
                 "name='" + name + '\'' +
                 ", dni='" + id + '\'' +
@@ -73,13 +75,15 @@ public class User extends BaseObject<String> implements IBooking {
     }
 
     @Override
-    public Booking addBooking(Booking booking) {
+    public Booking addBooking(Booking booking)
+    {
         this.bookings.add(booking);
         return booking;
     }
 
     @Override
-    public Booking editBooking(UUID id, SetBookingRequest values) {
+    public Booking editBooking(UUID id, SetBookingRequest values)
+    {
         Booking booking = bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
         if(booking != null)
             booking.setValues(values);
@@ -87,12 +91,14 @@ public class User extends BaseObject<String> implements IBooking {
     }
 
     @Override
-    public Booking getBooking(UUID id) {
+    public Booking getBooking(UUID id)
+    {
         return bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
     }
 
     @Override
-    public Boolean deleteBooking(UUID id) {
+    public Boolean deleteBooking(UUID id)
+    {
         Boolean response = false;
         Booking booking = bookings.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
         if(booking != null)
@@ -103,15 +109,15 @@ public class User extends BaseObject<String> implements IBooking {
         return response;
     }
 
-    public List<Booking> getBookings(GetUserBookingRequest request) {
-        List<Booking> bookingList;
-//        if(request.getSearch() != null){
-//            return bookings.stream().filter(b -> b.);
-//        }else
-        if(request.getFinished() != null){
-            bookingList = bookings.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
-        }else {
-            bookingList = bookings;
+    public List<Booking> getBookings(GetUserBookingRequest request)
+    {
+        List<Booking> bookingList = bookings;
+        if (request.getFinished() != null) {
+            if (request.getFinished().equals(true)) {
+                bookingList = bookings.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+            } else if (request.getFinished().equals(false)) {
+                bookingList = bookings.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+            }
         }
         return bookingList;
     }
