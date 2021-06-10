@@ -31,6 +31,8 @@ public class Hotel {
 
     public String getName() {
         return name;
+    public List<Room> getRooms() {
+        return rooms;
     }
 
     public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)
@@ -314,8 +316,6 @@ public class Hotel {
         return errorResponse;
     }
 
-
-
     @Override
     public String toString() {
         return "Hotel{" +
@@ -324,4 +324,6 @@ public class Hotel {
                 ", stars=" + stars +
                 '}';
     }
+
+
 }
