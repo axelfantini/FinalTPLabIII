@@ -28,6 +28,7 @@ import requests.CreateRoomTypeRequest;
 import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 
+import javax.management.relation.Role;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -220,6 +221,50 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void toDashboardHome(MouseEvent mouseEvent) {
+        try {
+            if(setupStep5TableViewData.size() > 0)
+                Main.changeStage("/views/DashboardHome.fxml");
+            else
+                showError("Debes cargar alguna habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toDashboardBookings(MouseEvent mouseEvent) {
+        try {
+            if(setupStep5TableViewData.size() > 0)
+                Main.changeStage("/views/DashboardBookings.fxml");
+            else
+                showError("Debes cargar alguna habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toDashboardUsers(MouseEvent mouseEvent) {
+        try {
+            if(setupStep5TableViewData.size() > 0)
+                Main.changeStage("/views/DashboardUsers.fxml");
+            else
+                showError("Debes cargar alguna habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toAdminPanel(MouseEvent mouseEvent) {
+        try {
+            if(setupStep5TableViewData.size() > 0)
+                Main.changeStage("/views/AdminPanel.fxml");
+            else
+                showError("Debes cargar alguna habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
     public void loadRoomTypes(MouseEvent mouseEvent)
     {
         if(setupStep5ComboType.getItems().size()  == 0)
@@ -297,6 +342,27 @@ public class ViewController implements Initializable {
                 stars[i].setVisible(true);
             }
             loginLabelWelcome.setText("Bienvenido a " + actualHotel.getName());
+        }
+    }
+
+    public void login()
+    {
+        String dni = loginTxtDni.getText();
+        String pass = loginTxtPassword.getText();
+        if(checkLogin(dni, pass))
+        {
+            User user = Main.getActualUser();
+            if(user != null)
+            {
+                if(user.getRole() != RoleEnum.USER)
+                {
+                    toDashboardHome(null);
+                }
+                else
+                {
+                    toDashboardBookings(null);
+                }
+            }
         }
     }
 
@@ -400,6 +466,30 @@ public class ViewController implements Initializable {
             else
                 showError(response.getError().getFancyError(), 1);
         }
+    }
+
+    private Boolean checkLogin(String dni, String pass)
+    {
+        Boolean response = false;
+        Hotel hotel = Main.getActualHotel();
+        if(hotel != null)
+        {
+            ErrorResponse<User> errorResponse = hotel.getUser(dni);
+            if(errorResponse.getSuccess())
+            {
+                User user = errorResponse.getBody();
+                if(user.checkPassword(pass))
+                {
+                    Main.setActualUser(user);
+                    response = true;
+                }
+            }
+            else
+            {
+                showError(errorResponse.getError().getFancyError(), 1);
+            }
+        }
+        return response;
     }
 
     private Boolean checkHotel(String name, String address)

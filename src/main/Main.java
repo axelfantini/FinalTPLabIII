@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import models.Hotel;
 import models.User;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +27,9 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 879, 586));
         primaryStage.show();
         this.primaryStage = primaryStage;
+        JFileChooser fr = new JFileChooser();
+        FileSystemView fw = fr.getFileSystemView();
+        System.out.println(fw.getDefaultDirectory() + "\\HotelManager\\");
     }
 
     public static void main(String[] args) {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+    <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@img/bg-dashboard.jpg" />
+        </image>
+        <viewport>
+            <Rectangle2D />
+        </viewport>
+    </ImageView>
+   <TableView layoutX="269.0" layoutY="74.0" opacity="0.93" prefHeight="434.0" prefWidth="572.0">
+     <columns>
+       <TableColumn prefWidth="114.4000244140625" text="Num. Habitacion" />
+       <TableColumn minWidth="0.0" prefWidth="172.79998779296875" text="Checkin" />
+         <TableColumn minWidth="0.0" prefWidth="169.60003662109375" text="Checkout" />
+         <TableColumn minWidth="0.0" prefWidth="115.2000732421875" text="Estado" />
+     </columns>
+   </TableView>
+   <Pane layoutX="33.0" layoutY="74.0" opacity="0.93" prefHeight="43.0" prefWidth="206.0" style="-fx-background-color: white;" />
+   <Button layoutX="33.0" layoutY="117.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardHome" prefHeight="63.0" prefWidth="206.0" text="Inicio" />
+   <Button layoutX="33.0" layoutY="148.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardUsers" prefHeight="63.0" prefWidth="206.0" text="Usuarios" />
+   <Button layoutX="33.0" layoutY="179.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardBookings" prefHeight="63.0" prefWidth="206.0" text="Reservas" />
+   <Button disable="true" layoutX="33.0" layoutY="210.0" mnemonicParsing="false" opacity="0.75" prefHeight="63.0" prefWidth="206.0" text="Admin Panel" />
+   <Button layoutX="33.0" layoutY="476.0" mnemonicParsing="false" opacity="0.93" prefHeight="63.0" onMouseClicked="#logout" prefWidth="206.0" text="Salir" />
+   <Label alignment="CENTER" layoutX="64.0" layoutY="74.0" prefHeight="43.0" prefWidth="144.0" text="Menu" textAlignment="CENTER" wrapText="true">
+      <font>
+         <Font size="25.0" />
+      </font>
+   </Label>
+
+</AnchorPane>
