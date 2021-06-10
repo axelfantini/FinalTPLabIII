@@ -1,5 +1,6 @@
 package main;
 
+import helpers.SaveInfoHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,14 +41,16 @@ public class Main extends Application {
         File file = fileChooser.showOpenDialog(primaryStage);
         if (file != null) {
             // OPEN FILE HERE!
+            SaveInfoHelper.readHotel(file);
         }
     }
 
-    public static void saveFile(FileChooser fileChooser)
+    public static void saveFile(Hotel hotel, FileChooser fileChooser)
     {
         File file = fileChooser.showSaveDialog(primaryStage);
         if (file != null) {
             // SAVE FILE HERE!
+            SaveInfoHelper.saveHotel(hotel, file);
         }
     }
 

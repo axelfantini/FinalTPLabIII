@@ -54,7 +54,7 @@
       </Label>
         <TextField fx:id="setupStep5TxtNum" layoutX="633.0" layoutY="238.0" prefWidth="150.0" promptText="Num. habitacion" />
         <TextField fx:id="setupStep5ComboReason" disable="true" layoutX="633.0" layoutY="365.0" prefWidth="150.0" promptText="Razon del Estado" />
-        <Button fx:id="setupStep5BtnEnd" layoutX="728.0" layoutY="415.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" styleClass="primary" text="Terminar" />
+        <Button fx:id="setupStep5BtnEnd" layoutX="728.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#testJSON" prefHeight="31.0" prefWidth="90.0" styleClass="primary" text="Terminar" />
         <Button fx:id="setupStep5BtnAdd" layoutX="596.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#createRoom" prefHeight="31.0" prefWidth="90.0" styleClass="success" text="+ Agregar" />
         <ComboBox fx:id="setupStep5ComboStatus" layoutX="633.0" layoutY="320.0" onAction="#toggleReason" onMouseClicked="#loadRoomStatus" prefWidth="150.0" promptText="Estado de habitacion" visibleRowCount="3" />
         <ComboBox fx:id="setupStep5ComboType" layoutX="633.0" layoutY="278.0" onMouseClicked="#loadRoomTypes" prefWidth="150.0" promptText="Tipo de habitacion" visibleRowCount="3" />
