@@ -10,8 +10,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.MouseEvent;
@@ -26,29 +29,35 @@ import requests.CreateRoomTypeRequest;
 import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 
+import javax.management.relation.Role;
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ViewController {
+public class ViewController implements Initializable {
+    public FileChooser fileChooser = new FileChooser();
+    public Label labelError;
+    public Pane paneLabelError;
+
     public Button homeBtnCreate;
     public Button homeBtnLoad;
     public TextField setupTxtName;
     public TextField setupTxtAddress;
     public Slider setupSliderStars;
-    public Button setupBtnLoadData;
     public Button setupBtnCreate;
     public Button setupBtnBack;
-    public Button setupBtnFileChooser;
-    public FileChooser fileChooser = new FileChooser();
-    public Label labelError;
-    public Pane paneLabelError;
+
     public TextField setupStep2TxtName;
     public TextField setupStep2TxtDNI;
     public TextField setupStep2TxtCountry;
     public TextField setupStep2TxtAddress;
     public PasswordField setupStep2TxtPassword;
     public Button setupStep2BtnNext;
+
     public TextField setupStep3TxtName;
     public TextField setupStep3TxtDNI;
     public TextField setupStep3TxtCountry;
@@ -56,6 +65,9 @@ public class ViewController {
     public PasswordField setupStep3TxtPassword;
     public Button setupStep3BtnNext;
     public Button setupStep3BtnAdd;
+    public TableView<User> setupStep3TableView;
+    private List<User> setupStep3TableViewData = new ArrayList<>();
+
     public TextField setupStep4TxtName;
     public TextField setupStep4TxtCapacity;
     public TextField setupStep4TxtPrice;
@@ -63,6 +75,7 @@ public class ViewController {
     public Button setupStep4BtnAdd;
     public TableView<RoomType> setupStep4TableView;
     private static List<RoomType> setupStep4TableViewData = new ArrayList<>();
+
     public TextField setupStep5TxtNum;
     public TextField setupStep5ComboReason;
     public ComboBox<RoomStatusEnum> setupStep5ComboStatus;
@@ -73,8 +86,29 @@ public class ViewController {
     public TableColumn setupStep5TableColumnRoomType;
     public TableColumn setupStep5TableColumnStatus;
     private List<Room> setupStep5TableViewData = new ArrayList<>();
-    public TableView<User> setupStep3TableView;
-    private List<User> setupStep3TableViewData = new ArrayList<>();
+
+    public Label loginLabelWelcome;
+    public TextField loginTxtDni;
+    public Button loginBtn;
+    public PasswordField loginTxtPassword;
+    public ImageView loginStar1;
+    public ImageView loginStar2;
+    public ImageView loginStar3;
+    public ImageView loginStar4;
+    public ImageView loginStar5;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        switch (location.toString().split("/views/")[1])
+        {
+            case "SetupStep5.fxml":
+                loadTableViewsStep5();
+                break;
+            case "Login.fxml":
+                loadLogin();
+                break;
+        }
+    }
 
     private Boolean isInt(String string)
     {
@@ -86,10 +120,6 @@ public class ViewController {
             response = false;
         }
         return response;
-    }
-
-    public void testJSON(MouseEvent botonaso){
-        saveFile(Main.getActualHotel());
     }
 
     private Boolean isDouble(String string)
@@ -113,18 +143,34 @@ public class ViewController {
         pause.play();
     }
 
-    public void openFile(MouseEvent mouseEvent)
+    public void loadHotelBackup()
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
-        Main.openFile(fileChooser);
+        Main.openFile(fileChooser, Hotel.class);
     }
 
-    public void saveFile(Hotel hotel)
+    public void saveHotelBackup(Hotel hotel)
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
         Main.saveFile(hotel,fileChooser);
+    }
+
+    public void saveHotel()
+    {
+        Hotel hotel = Main.getActualHotel();
+        if(hotel != null)
+        {
+            JFileChooser fr = new JFileChooser();
+            FileSystemView fw = fr.getFileSystemView();
+            String path = fw.getDefaultDirectory() + "\\HotelManager\\save.json";
+            ErrorResponse<Hotel> errorResponse = SaveInfoHelper.saveFile(hotel, path);
+            if(!errorResponse.getSuccess())
+                showError(errorResponse.getError().getFancyError(), 1);
+        }
+        else
+            showError("Error guardando el hotel", 1);
     }
 
     private void showError(String text, Integer seconds)
@@ -178,6 +224,55 @@ public class ViewController {
                 Main.changeStage("/views/SetupStep5.fxml");
             else
                 showError("Debes cargar algun tipo de habitacion", 1);
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toLogin(MouseEvent mouseEvent) {
+        if(setupStep5TableViewData.size() > 0) {
+            saveHotel();
+            toLoginScene();
+        }
+        else
+            showError("Debes cargar alguna habitacion", 1);
+    }
+
+    public void toLoginScene() {
+        try {
+            Main.changeStage("/views/Login.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toDashboardHome(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/DashboardHome.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toDashboardBookings(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/DashboardBookings.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toDashboardUsers(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/DashboardUsers.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toAdminPanel(MouseEvent mouseEvent) {
+        try {
+            Main.changeStage("/views/AdminPanel.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -247,6 +342,48 @@ public class ViewController {
     }
 
 
+    public void loadLogin()
+    {
+        Hotel actualHotel = Main.getActualHotel();
+        if(actualHotel != null)
+        {
+            ImageView[] stars = {loginStar1, loginStar2, loginStar3, loginStar4, loginStar5};
+            for(int i = 0; i < 5; i++)
+            {
+                if(i >= actualHotel.getStars())
+                    stars[i].setEffect(new ColorAdjust(0.0, 0.0, -0.3, -1.0));
+                stars[i].setVisible(true);
+            }
+            loginLabelWelcome.setText("Bienvenido a " + actualHotel.getName());
+        }
+    }
+
+    public void login()
+    {
+        String dni = loginTxtDni.getText();
+        String pass = loginTxtPassword.getText();
+        if(checkLogin(dni, pass))
+        {
+            User user = Main.getActualUser();
+            if(user != null)
+            {
+                if(user.getRole() != RoleEnum.USER)
+                {
+                    toDashboardHome(null);
+                }
+                else
+                {
+                    toDashboardBookings(null);
+                }
+            }
+        }
+    }
+
+    public void logout(MouseEvent mouseEvent)
+    {
+        Main.setActualUser(null);
+        toLoginScene();
+    }
 
     public void toHome(MouseEvent mouseEvent){
         try {
@@ -310,7 +447,6 @@ public class ViewController {
     }
 
     public void createRoom(MouseEvent mouseEvent) {
-        loadTableViewsStep5();
 
         String num = setupStep5TxtNum.getText();
         String reason = setupStep5ComboReason.getText();
@@ -349,6 +485,30 @@ public class ViewController {
             else
                 showError(response.getError().getFancyError(), 1);
         }
+    }
+
+    private Boolean checkLogin(String dni, String pass)
+    {
+        Boolean response = false;
+        Hotel hotel = Main.getActualHotel();
+        if(hotel != null)
+        {
+            ErrorResponse<User> errorResponse = hotel.getUser(dni);
+            if(errorResponse.getSuccess())
+            {
+                User user = errorResponse.getBody();
+                if(user.checkPassword(pass))
+                {
+                    Main.setActualUser(user);
+                    response = true;
+                }
+            }
+            else
+            {
+                showError(errorResponse.getError().getFancyError(), 1);
+            }
+        }
+        return response;
     }
 
     private Boolean checkHotel(String name, String address)

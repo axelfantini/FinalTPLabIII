@@ -6,6 +6,8 @@ public enum ErrorEnum {
     USER_NOT_FOUND ("No existe ese usuario"),
     VIEW_NOT_FOUND ("Vista no encontrada"),
     ROOMTYPE_NOT_FOUND ("No existe ese tipo de habitacion"),
+    OPEN_FILE_ERROR ("No se pudo abrir el archivo"),
+    SAVE_FILE_ERROR ("Error al guardar el archivo"),
     ROOM_NOT_FOUND ("No existe la habitación");
 
     private final String fancyError;

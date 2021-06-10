@@ -25,16 +25,12 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public Integer getStars() {
         return stars;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public String getName() {
+        return name;
     }
 
     public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)

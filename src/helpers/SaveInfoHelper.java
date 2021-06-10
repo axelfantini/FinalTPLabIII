@@ -1,6 +1,7 @@
 package helpers;
 
 import com.google.gson.Gson;
+import enums.ErrorEnum;
 import models.ErrorResponse;
 import models.Hotel;
 import models.Room;
@@ -9,48 +10,55 @@ import java.io.*;
 import java.util.List;
 
 public class SaveInfoHelper {
-    public static void /*ErrorResponse<String>*/ saveHotel(Hotel hotel, File file){
+    public static <T> ErrorResponse<T> saveFile(T item, String path){
         Gson gson = new Gson();
-
-        String json = gson.toJson(hotel);
-
+        createDirectory(path);
+        String json = gson.toJson(item);
+        ErrorResponse<T> errorResponse = new ErrorResponse<>();
         try {
-            FileWriter writer = new FileWriter(file.getAbsolutePath());
+
+            FileWriter writer = new FileWriter(path);
             writer.write(json);
             writer.close();
-
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(item);
         } catch (IOException e) {
-            e.printStackTrace();
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.SAVE_FILE_ERROR);
         }
 
-        System.out.println(json);
+        return errorResponse;
     }
 
-    public static void readHotel(File file){
-        Gson gson = new Gson();
+    private static void createDirectory(String path)
+    {
+        String newPath = "";
+        String[] splitPath = path.split("\\\\");
+        for(int i = 0; i < splitPath.length - 1; i++)
+            newPath += splitPath[i] + "\\";
 
+        File theDir = new File(newPath);
+        if (!theDir.exists()){
+            theDir.mkdirs();
+        }
+    }
+
+    public static <T> ErrorResponse<T> readFile(String path, Class<T> tClass){
+        Gson gson = new Gson();
+        ErrorResponse<T> errorResponse = new ErrorResponse<>();
         try {
 
-            System.out.println("Reading JSON from a file");
-            System.out.println("----------------------------");
-
             BufferedReader br = new BufferedReader(
-                    new FileReader(file.getAbsolutePath()));
+                    new FileReader(path));
 
-            //convert the json string back to object
-            Hotel hotel = gson.fromJson(br, Hotel.class);
-
-            System.out.println("Hotel: "+hotel.getName());
-
-
-            System.out.println("Population: "+hotel.getStars());
-
-            List<Room> rooms = hotel.getRooms();
-
-            System.out.println(rooms.toString());
+            T item = gson.fromJson(br, tClass);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(item);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.OPEN_FILE_ERROR);
         }
+        return errorResponse;
     }
 }

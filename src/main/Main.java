@@ -1,5 +1,6 @@
 package main;
 
+import enums.ErrorEnum;
 import helpers.SaveInfoHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,9 +8,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import models.ErrorResponse;
 import models.Hotel;
 import models.User;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +25,7 @@ public class Main extends Application {
     private static User actualUser;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/views/Home.fxml"));
+        Parent root = loadHotel() ? FXMLLoader.load(getClass().getResource("/views/Login.fxml")) : FXMLLoader.load(getClass().getResource("/views/Home.fxml"));
         primaryStage.setTitle("Hotel Assistant");
         primaryStage.setScene(new Scene(root, 879, 586));
         primaryStage.show();
@@ -36,22 +40,47 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 879, 586));
     }
 
-    public static void openFile(FileChooser fileChooser)
+    public static <T> ErrorResponse<T> openFile(FileChooser fileChooser, Class<T> tClass)
     {
+        ErrorResponse<T> errorResponse = new ErrorResponse<>();
         File file = fileChooser.showOpenDialog(primaryStage);
         if (file != null) {
-            // OPEN FILE HERE!
-            SaveInfoHelper.readHotel(file);
+            errorResponse = SaveInfoHelper.readFile(file.getAbsolutePath(), tClass);
         }
+        else {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.OPEN_FILE_ERROR);
+        }
+        return errorResponse;
     }
 
-    public static void saveFile(Hotel hotel, FileChooser fileChooser)
+    public static <T> ErrorResponse<T> saveFile(T item, FileChooser fileChooser)
     {
+        ErrorResponse<T> errorResponse = new ErrorResponse<>();
         File file = fileChooser.showSaveDialog(primaryStage);
         if (file != null) {
-            // SAVE FILE HERE!
-            SaveInfoHelper.saveHotel(hotel, file);
+            errorResponse = SaveInfoHelper.saveFile(item, file.getAbsolutePath());
         }
+        else {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.SAVE_FILE_ERROR);
+        }
+        return errorResponse;
+    }
+
+    private static Boolean loadHotel()
+    {
+        Boolean response = false;
+        JFileChooser fr = new JFileChooser();
+        FileSystemView fw = fr.getFileSystemView();
+        String path = fw.getDefaultDirectory() + "\\HotelManager\\save.json";
+        ErrorResponse<Hotel> errorResponse = SaveInfoHelper.readFile(path, Hotel.class);
+        if(errorResponse.getSuccess())
+        {
+            Main.setActualHotel(errorResponse.getBody());
+            response = true;
+        }
+        return response;
     }
 
     public static User getActualUser() {
