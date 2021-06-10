@@ -31,8 +31,6 @@ public class Hotel {
 
     public String getName() {
         return name;
-    public List<Room> getRooms() {
-        return rooms;
     }
 
     public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)

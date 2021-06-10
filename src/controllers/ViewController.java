@@ -30,6 +30,8 @@ import requests.CreateRoomRequest;
 import requests.CreateUserRequest;
 
 import javax.management.relation.Role;
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -120,10 +122,6 @@ public class ViewController implements Initializable {
         return response;
     }
 
-    public void testJSON(MouseEvent botonaso){
-        saveFile(Main.getActualHotel());
-    }
-
     private Boolean isDouble(String string)
     {
         Boolean response;
@@ -145,18 +143,34 @@ public class ViewController implements Initializable {
         pause.play();
     }
 
-    public void openFile(MouseEvent mouseEvent)
+    public void loadHotelBackup()
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
-        Main.openFile(fileChooser);
+        Main.openFile(fileChooser, Hotel.class);
     }
 
-    public void saveFile(Hotel hotel)
+    public void saveHotelBackup(Hotel hotel)
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
         Main.saveFile(hotel,fileChooser);
+    }
+
+    public void saveHotel()
+    {
+        Hotel hotel = Main.getActualHotel();
+        if(hotel != null)
+        {
+            JFileChooser fr = new JFileChooser();
+            FileSystemView fw = fr.getFileSystemView();
+            String path = fw.getDefaultDirectory() + "\\HotelManager\\save.json";
+            ErrorResponse<Hotel> errorResponse = SaveInfoHelper.saveFile(hotel, path);
+            if(!errorResponse.getSuccess())
+                showError(errorResponse.getError().getFancyError(), 1);
+        }
+        else
+            showError("Error guardando el hotel", 1);
     }
 
     private void showError(String text, Integer seconds)
@@ -216,11 +230,17 @@ public class ViewController implements Initializable {
     }
 
     public void toLogin(MouseEvent mouseEvent) {
+        if(setupStep5TableViewData.size() > 0) {
+            saveHotel();
+            toLoginScene();
+        }
+        else
+            showError("Debes cargar alguna habitacion", 1);
+    }
+
+    public void toLoginScene() {
         try {
-            if(setupStep5TableViewData.size() > 0)
-                Main.changeStage("/views/Login.fxml");
-            else
-                showError("Debes cargar alguna habitacion", 1);
+            Main.changeStage("/views/Login.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -228,10 +248,7 @@ public class ViewController implements Initializable {
 
     public void toDashboardHome(MouseEvent mouseEvent) {
         try {
-            if(setupStep5TableViewData.size() > 0)
-                Main.changeStage("/views/DashboardHome.fxml");
-            else
-                showError("Debes cargar alguna habitacion", 1);
+            Main.changeStage("/views/DashboardHome.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -239,10 +256,7 @@ public class ViewController implements Initializable {
 
     public void toDashboardBookings(MouseEvent mouseEvent) {
         try {
-            if(setupStep5TableViewData.size() > 0)
-                Main.changeStage("/views/DashboardBookings.fxml");
-            else
-                showError("Debes cargar alguna habitacion", 1);
+            Main.changeStage("/views/DashboardBookings.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -250,10 +264,7 @@ public class ViewController implements Initializable {
 
     public void toDashboardUsers(MouseEvent mouseEvent) {
         try {
-            if(setupStep5TableViewData.size() > 0)
-                Main.changeStage("/views/DashboardUsers.fxml");
-            else
-                showError("Debes cargar alguna habitacion", 1);
+            Main.changeStage("/views/DashboardUsers.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -261,10 +272,7 @@ public class ViewController implements Initializable {
 
     public void toAdminPanel(MouseEvent mouseEvent) {
         try {
-            if(setupStep5TableViewData.size() > 0)
-                Main.changeStage("/views/AdminPanel.fxml");
-            else
-                showError("Debes cargar alguna habitacion", 1);
+            Main.changeStage("/views/AdminPanel.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -369,6 +377,12 @@ public class ViewController implements Initializable {
                 }
             }
         }
+    }
+
+    public void logout(MouseEvent mouseEvent)
+    {
+        Main.setActualUser(null);
+        toLoginScene();
     }
 
     public void toHome(MouseEvent mouseEvent){

@@ -22,7 +22,7 @@
          <font>
             <Font size="17.0" />
          </font></Button>
-      <Button fx:id="homeBtnLoad" layoutX="33.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#openFile" prefHeight="38.0" prefWidth="338.0" styleClass="info" text="Quiero cargar la informacion de un hotel">
+      <Button fx:id="homeBtnLoad" layoutX="33.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#loadHotelBackup" prefHeight="38.0" prefWidth="338.0" styleClass="info" text="Quiero cargar la informacion de un hotel">
          <font>
             <Font size="17.0" />
          </font></Button>
