@@ -3,6 +3,7 @@ package controllers;
 import enums.ErrorEnum;
 import enums.RoleEnum;
 import enums.RoomStatusEnum;
+import helpers.SaveInfoHelper;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -87,6 +88,10 @@ public class ViewController {
         return response;
     }
 
+    public void testJSON(MouseEvent botonaso){
+        saveFile(Main.getActualHotel());
+    }
+
     private Boolean isDouble(String string)
     {
         Boolean response;
@@ -115,11 +120,11 @@ public class ViewController {
         Main.openFile(fileChooser);
     }
 
-    public void saveFile(MouseEvent mouseEvent)
+    public void saveFile(Hotel hotel)
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
-        Main.saveFile(fileChooser);
+        Main.saveFile(hotel,fileChooser);
     }
 
     private void showError(String text, Integer seconds)

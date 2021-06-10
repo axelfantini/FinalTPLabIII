@@ -25,6 +25,18 @@ public class Hotel {
         this.stars = stars;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
     public ErrorResponse<RoomType> createRoomType(CreateRoomTypeRequest values)
     {
         ErrorResponse<RoomType> errorResponse = new ErrorResponse();
@@ -306,8 +318,6 @@ public class Hotel {
         return errorResponse;
     }
 
-
-
     @Override
     public String toString() {
         return "Hotel{" +
@@ -316,4 +326,6 @@ public class Hotel {
                 ", stars=" + stars +
                 '}';
     }
+
+
 }
