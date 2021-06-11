@@ -6,6 +6,7 @@ import requests.GetBookingRequest;
 import requests.SetBookingRequest;
 import requests.SetUserRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public class User extends BaseObject<String> implements IBooking {
     private String address;
     private String password;
     private RoleEnum role;
-    private List<Booking> bookings;
+    private List<Booking> bookings = new ArrayList<>();
 
     public User(String name, String dni, String country, String address, String password, RoleEnum role) {
         this.name = name;

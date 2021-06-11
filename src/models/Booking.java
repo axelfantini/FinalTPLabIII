@@ -12,8 +12,8 @@ public class Booking extends BaseObject<UUID> {
     private LocalDate expectedFinishDate;
     private LocalDate finishDate;
     private Boolean lateCheckout;
-    private Boolean canceled;
-    private Boolean finished;
+    private Boolean canceled = false;
+    private Boolean finished = false;
     private Integer roomId;
     private Double roomPrice;
     private BedsEnum bedTypes;
@@ -130,7 +130,7 @@ public class Booking extends BaseObject<UUID> {
         this.startDate = values.getStartDate();
         this.expectedFinishDate = values.getExpectedFinishDate();
         this.lateCheckout = values.getLateCheckout();
-        this.roomPrice = values.getRoomPrice();
         this.bedTypes = values.getBedTypes();
+        this.roomId = values.getRoomId();
     }
 }

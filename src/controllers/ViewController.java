@@ -1,5 +1,6 @@
 package controllers;
 
+import enums.BedsEnum;
 import enums.ErrorEnum;
 import enums.RoleEnum;
 import enums.RoomStatusEnum;
@@ -25,20 +26,22 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import main.Main;
 import models.*;
-import requests.CreateRoomTypeRequest;
-import requests.CreateRoomRequest;
-import requests.CreateUserRequest;
+import requests.*;
 
 import javax.management.relation.Role;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class ViewController implements Initializable {
+
+    private static ViewParams params = new ViewParams();
     public FileChooser fileChooser = new FileChooser();
     public Label labelError;
     public Pane paneLabelError;
@@ -97,6 +100,31 @@ public class ViewController implements Initializable {
     public ImageView loginStar4;
     public ImageView loginStar5;
 
+    public Button btnMenuDashboardHome;
+    public Button btnMenuDashboardBookings;
+    public Button btnMenuDashboardUsers;
+    public Button btnMenuAdminPanel;
+    public TableView<Booking> dashboardTableView;
+    public TableView<User> dashboardUsersTableView;
+    public TableColumn dashboardTableColumnRoomNum;
+    public TableColumn dashboardTableColumnCheckin;
+    public TableColumn dashboardTableColumnCheckout;
+    public TableColumn dashboardTableColumnStatus;
+    public TableColumn dashboardTableColumnDetails;
+    public TableColumn dashboardTableColumnRole;
+    public ComboBox<RoleEnum> dashboardUsersCombo;
+
+    public Button userDetailsBtnBack;
+    public TextField userDetailsTxtName;
+    public TextField userDetailsTxtDNI;
+    public TextField userDetailsTxtCountry;
+    public TextField userDetailsTxtAddress;
+    public PasswordField userDetailsTxtPassword;
+    public Button userDetailsBtnEdit;
+    public Button userDetailsBtnBooking;
+    public Button userDetailsBtnDelete;
+    public ComboBox<RoleEnum> userDetailsComboRole;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         switch (location.toString().split("/views/")[1])
@@ -106,6 +134,74 @@ public class ViewController implements Initializable {
                 break;
             case "Login.fxml":
                 loadLogin();
+                Main.getActualHotel().createBooking(new CreateBookingRequest(
+                        LocalDate.of(2021,06,02),
+                        LocalDate.of(2021,06,11),
+                        false,
+                        101,
+                        "43742056",
+                        BedsEnum.DOUBLE_BED
+                ));
+
+                break;
+            case "DashboardBookings.fxml":
+                if(Main.getActualUser().getRole() == RoleEnum.USER)
+                {
+                    btnMenuDashboardHome.setDisable(true);
+                    btnMenuDashboardHome.setOpacity(0.75);
+                    btnMenuDashboardBookings.setVisible(false);
+                    btnMenuDashboardUsers.setVisible(false);
+                    btnMenuAdminPanel.setVisible(false);
+                }
+                else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+                    btnMenuAdminPanel.setVisible(false);
+                loadTableViewDashboardBookings();
+                loadBookingsToTable(Main.getActualHotel().getBookings());
+                break;
+            case "DashboardHome.fxml":
+                loadTableViewDashboardBookings();
+                User actualUser = Main.getActualUser();
+                if(actualUser.getRole() == RoleEnum.USER)
+                    loadBookingsToTable(actualUser.getBookings(new GetBookingRequest()));
+                else
+                    loadBookingsToTable(Main.getActualHotel().getBookings());
+                if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+                    btnMenuAdminPanel.setVisible(false);
+                break;
+            case "DashboardUsers.fxml":
+                loadTableViewDashboardUsers();
+                loadUsersToTable(Main.getActualHotel().getUsers());
+                if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+                    btnMenuAdminPanel.setVisible(false);
+                break;
+            case "UserDetails.fxml":
+                String userId = params.getValue("userId");
+                ErrorResponse<User> errorResponse = Main.getActualHotel().getUser(userId);
+                if(errorResponse.getSuccess())
+                {
+                    User user = errorResponse.getBody();
+                    userDetailsTxtName.setText(user.getName());
+                    userDetailsTxtDNI.setText(user.getDni());
+                    userDetailsTxtCountry.setText(user.getCountry());
+                    userDetailsTxtAddress.setText(user.getAddress());
+                    userDetailsComboRole.setConverter(new StringConverter<RoleEnum>() {
+                        @Override
+                        public String toString(RoleEnum roleEnum) {
+                            return roleEnum.getName();
+                        }
+
+                        @Override
+                        public RoleEnum fromString(String string) {
+                            return null;
+                        }
+                    });
+                    userDetailsComboRole.getItems().addAll(
+                            RoleEnum.USER,
+                            RoleEnum.RECEPTIONIST,
+                            RoleEnum.ADMIN);
+                    userDetailsComboRole.setValue(user.getRole());
+                }
+
                 break;
         }
     }
@@ -147,7 +243,10 @@ public class ViewController implements Initializable {
     {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
-        Main.openFile(fileChooser, Hotel.class);
+        ErrorResponse<Hotel> errorResponse = Main.openFile(fileChooser, Hotel.class);
+        if(errorResponse.getSuccess())
+            Main.setActualHotel(errorResponse.getBody());
+        toLoginScene();
     }
 
     public void saveHotelBackup(Hotel hotel)
@@ -277,6 +376,15 @@ public class ViewController implements Initializable {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
     }
+    
+    public void toUserDetails()
+    {
+        try {
+            Main.changeStage("/views/UserDetails.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
 
     public void loadRoomTypes(MouseEvent mouseEvent)
     {
@@ -321,10 +429,135 @@ public class ViewController implements Initializable {
 
     }
 
+    public void loadTableViewDashboardBookings()
+    {
+        dashboardTableColumnRoomNum.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Booking, Room>, ObservableValue<String>>) p -> {
+            if (p.getValue() != null && p.getValue().getRoomId() != null) {
+                ErrorResponse<Room> errorResponse = Main.getActualHotel().getRoom(p.getValue().getRoomId());
+                if(errorResponse.getSuccess())
+                {
+                    return new SimpleStringProperty(errorResponse.getBody().getRoomNum().toString());
+                }
+                else
+                    return new SimpleStringProperty("");
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+        dashboardTableColumnStatus.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Booking, Boolean>, ObservableValue<String>>) p -> {
+            if (p.getValue() != null) {
+                if(p.getValue().getCanceled())
+                    return new SimpleStringProperty("Cancelada");
+                else if(p.getValue().getFinished())
+                    return new SimpleStringProperty("Terminada");
+                else
+                    return new SimpleStringProperty("Pendiente/En curso");
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+
+        Callback<TableColumn<Booking, Void>, TableCell<Booking, Void>> cellFactory = new Callback<TableColumn<Booking, Void>, TableCell<Booking, Void>>() {
+            @Override
+            public TableCell<Booking, Void> call(final TableColumn<Booking, Void> param) {
+                final TableCell<Booking, Void> cell = new TableCell<Booking, Void>() {
+                    private final Button btn = new Button("Detalles");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Booking data = getTableView().getItems().get(getIndex());
+                            System.out.println("selectedData: " + data);
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        dashboardTableColumnDetails.setCellFactory(cellFactory);
+    }
+
+    public void loadTableViewDashboardUsers()
+    {
+        dashboardTableColumnRole.setCellValueFactory((Callback<TableColumn.CellDataFeatures<User, RoleEnum>, ObservableValue<String>>) p -> {
+            if (p.getValue() != null && p.getValue().getRole() != null) {
+                return new SimpleStringProperty(p.getValue().getRole().getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+
+        Callback<TableColumn<User, Void>, TableCell<User, Void>> cellFactory = new Callback<TableColumn<User, Void>, TableCell<User, Void>>() {
+            @Override
+            public TableCell<User, Void> call(final TableColumn<User, Void> param) {
+                final TableCell<User, Void> cell = new TableCell<User, Void>() {
+                    private final Button btn = new Button("Detalles");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            User data = getTableView().getItems().get(getIndex());
+                            params.setItem("userId", data.getId());
+                            toUserDetails();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        dashboardTableColumnDetails.setCellFactory(cellFactory);
+    }
+
+    public void loadComboDashboardUsers(MouseEvent mouseEvent)
+    {
+        if(dashboardUsersCombo.getItems().size()  == 0)
+        {
+            dashboardUsersCombo.setConverter(new StringConverter<RoleEnum>() {
+                @Override
+                public String toString(RoleEnum roleEnum) {
+                    return roleEnum.getName();
+                }
+
+                @Override
+                public RoleEnum fromString(String string) {
+                    return null;
+                }
+            });
+            dashboardUsersCombo.getItems().addAll(
+                    RoleEnum.USER,
+                    RoleEnum.RECEPTIONIST,
+                    RoleEnum.ADMIN);
+        }
+
+    }
+
+    public void loadBookingsToTable(List<Booking> bookings)
+    {
+        dashboardTableView.getItems().addAll(bookings);
+    }
+
+    public void loadUsersToTable(List<User> users)
+    {
+        dashboardUsersTableView.getItems().addAll(users);
+    }
+
     public void loadTableViewsStep5()
     {
         setupStep5TableColumnRoomType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomType>, ObservableValue<String>>) p -> {
-            // p.getValue() returns the PersonType instance for a particular TableView row
             if (p.getValue() != null && p.getValue().getRoomType() != null) {
                 return new SimpleStringProperty(p.getValue().getRoomType().getName());
             } else {
@@ -332,7 +565,6 @@ public class ViewController implements Initializable {
             }
         });
         setupStep5TableColumnStatus.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomStatusEnum>, ObservableValue<String>>) p -> {
-            // p.getValue() returns the PersonType instance for a particular TableView row
             if (p.getValue() != null && p.getValue().getStatus() != null) {
                 return new SimpleStringProperty(p.getValue().getStatus().getName());
             } else {

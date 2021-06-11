@@ -7,22 +7,16 @@ import java.time.LocalDate;
 public class SetBookingRequest {
     private LocalDate startDate;
     private LocalDate expectedFinishDate;
-    private LocalDate finishDate;
     private Boolean lateCheckout;
-    private Boolean canceled;
     private Integer roomId;
-    private Double roomPrice;
     private BedsEnum bedTypes;
-    private Double extraConsumption;
-    private Double totalPrice;
 
-    public SetBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, LocalDate finishDate, Boolean lateCheckout,
-                             Boolean canceled, Integer roomId, Double roomPrice, BedsEnum bedTypes, Double extraConsumption) {
+    public SetBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout,
+                             Integer roomId, BedsEnum bedTypes) {
         this.startDate = startDate;
         this.expectedFinishDate = expectedFinishDate;
-        this.finishDate = finishDate;
         this.lateCheckout = lateCheckout;
-        this.canceled = canceled;
+        this.bedTypes = bedTypes;
         this.roomId = roomId;
     }
 
@@ -36,19 +30,9 @@ public class SetBookingRequest {
         return expectedFinishDate;
     }
 
-    public LocalDate getFinishDate()
-    {
-        return finishDate;
-    }
-
     public Boolean getLateCheckout()
     {
         return lateCheckout;
-    }
-
-    public Boolean getCanceled()
-    {
-        return canceled;
     }
 
     public Integer getRoomId()
@@ -56,23 +40,9 @@ public class SetBookingRequest {
         return roomId;
     }
 
-    public Double getRoomPrice()
-    {
-        return roomPrice;
-    }
-
     public BedsEnum getBedTypes()
     {
         return bedTypes;
     }
 
-    public Double getExtraConsumption()
-    {
-        return extraConsumption;
-    }
-
-    public Double getTotalPrice()
-    {
-        return totalPrice;
-    }
 }

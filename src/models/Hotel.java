@@ -27,6 +27,14 @@ public class Hotel {
         this.stars = stars;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
     public Integer getStars() {
         return stars;
     }
@@ -126,6 +134,41 @@ public class Hotel {
 
     }
 
+    public ErrorResponse<Room> editRoom(SetRoomRequest roomRequest)
+    {
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomRequest.getRoomNum())).findFirst().orElse(null);
+        if(room != null)
+        {
+            room.setValues(roomRequest);
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
+    public ErrorResponse<Room> getRoom(Integer roomNum)
+    {
+        ErrorResponse<Room> errorResponse = new ErrorResponse<>();
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
+        if(room != null)
+        {
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(room);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
     public ErrorResponse<Booking> createBooking (CreateBookingRequest values)
     {
         User user = users.stream().filter(c -> c.getDni().equals(values.getDni())).findFirst().orElse(null);
@@ -139,7 +182,7 @@ public class Hotel {
                     values.getStartDate(),
                     values.getExpectedFinishDate(),
                     values.getLateCheckout(),
-                    values.getRoomPrice(),
+                    room.getRoomType().getPrice(),
                     values.getBedTypes(),
                     values.getRoomId()
             );
