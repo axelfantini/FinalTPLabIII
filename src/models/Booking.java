@@ -104,8 +104,8 @@ public class Booking extends BaseObject<UUID> {
         return extraConsumption;
     }
 
-    public void setExtraConsumption(Double extraConsumption) {
-        this.extraConsumption = extraConsumption;
+    public void addExtraConsumption(Double extraConsumption) {
+        this.extraConsumption += extraConsumption;
     }
 
     public Double getTotalPrice() {
