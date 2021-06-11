@@ -162,7 +162,7 @@ public class ViewController implements Initializable {
                 loadTableViewDashboardBookings();
                 User actualUser = Main.getActualUser();
                 if(actualUser.getRole() == RoleEnum.USER)
-                    loadBookingsToTable(actualUser.getBookings(new GetUserBookingRequest()));
+                    loadBookingsToTable(actualUser.getBookings(new GetBookingRequest()));
                 else
                     loadBookingsToTable(Main.getActualHotel().getBookings());
                 if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)

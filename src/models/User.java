@@ -6,6 +6,7 @@ import requests.GetBookingRequest;
 import requests.SetBookingRequest;
 import requests.SetUserRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
