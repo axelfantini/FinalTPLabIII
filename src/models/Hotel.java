@@ -27,10 +27,6 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
     public List<Booking> getBookings() {
         return bookings;
     }
@@ -344,6 +340,23 @@ public class Hotel {
         }
     }
 
+    public ErrorResponse<Booking> getBooking(UUID bookingId)
+    {
+        ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId) && !b.getLogicalDelete()).findFirst().orElse(null);
+        if(booking != null)
+        {
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(booking);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.ROOM_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
     public Boolean userLogin(String dni, String password)
     {
         Boolean response = false;
@@ -420,7 +433,7 @@ public class Hotel {
     }
 
     public List<User> getUsers(GetUsersRequest request) {
-        List<User> userList = users;
+        List<User> userList = users.stream().filter(u -> !u.getLogicalDelete()).collect(Collectors.toList());
         if (request.getSearch() != null) {
             String search = request.getSearch().toUpperCase();
             userList = userList.stream().filter(u -> u.getDni().toUpperCase().contains(search) ||
