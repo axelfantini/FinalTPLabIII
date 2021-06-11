@@ -3,8 +3,6 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -20,23 +18,28 @@
             <Rectangle2D />
         </viewport>
     </ImageView>
-   <TableView layoutX="269.0" layoutY="74.0" opacity="0.93" prefHeight="434.0" prefWidth="572.0">
-     <columns>
-       <TableColumn prefWidth="114.4000244140625" text="Num. Habitacion" />
-       <TableColumn minWidth="0.0" prefWidth="172.79998779296875" text="Checkin" />
-         <TableColumn minWidth="0.0" prefWidth="169.60003662109375" text="Checkout" />
-         <TableColumn minWidth="0.0" prefWidth="115.2000732421875" text="Estado" />
-     </columns>
-   </TableView>
-   <Pane layoutX="33.0" layoutY="74.0" opacity="0.93" prefHeight="43.0"  prefWidth="206.0" style="-fx-background-color: white;" />
-   <Button layoutX="33.0" layoutY="117.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardHome" prefHeight="63.0" prefWidth="206.0" text="Inicio" />
-   <Button layoutX="33.0" layoutY="148.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardUsers" prefHeight="63.0" prefWidth="206.0" text="Usuarios" />
-   <Button layoutX="33.0" layoutY="179.0" mnemonicParsing="false" opacity="0.93" onMouseClicked="#toDashboardBookings" prefHeight="63.0" prefWidth="206.0" text="Reservas" />
+   <Pane layoutX="33.0" layoutY="74.0" opacity="0.93" prefHeight="43.0" prefWidth="206.0" style="-fx-background-color: white;" />
+   <Button layoutX="33.0" layoutY="117.0" mnemonicParsing="false" onMouseClicked="#toDashboardHome" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Inicio" />
+   <Button layoutX="33.0" layoutY="148.0" mnemonicParsing="false" onMouseClicked="#toDashboardUsers" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Usuarios" />
+   <Button layoutX="33.0" layoutY="179.0" mnemonicParsing="false" onMouseClicked="#toDashboardBookings" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Reservas" />
    <Button disable="true" layoutX="33.0" layoutY="210.0" mnemonicParsing="false" opacity="0.75" prefHeight="63.0" prefWidth="206.0" text="Admin Panel" />
-   <Button layoutX="33.0" layoutY="476.0" mnemonicParsing="false" opacity="0.93" prefHeight="63.0" onMouseClicked="#logout" prefWidth="206.0" text="Salir" />
+   <Button layoutX="33.0" layoutY="476.0" mnemonicParsing="false" onMouseClicked="#logout" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Salir" />
    <Label alignment="CENTER" layoutX="64.0" layoutY="74.0" prefHeight="43.0" prefWidth="144.0" text="Menu" textAlignment="CENTER" wrapText="true">
       <font>
          <Font size="25.0" />
+      </font>
+   </Label>
+   <Pane layoutX="302.0" layoutY="74.0" opacity="0.93" prefHeight="436.0" prefWidth="535.0" style="-fx-background-color: white;" />
+   <Button layoutX="477.0" layoutY="209.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="185.0" styleClass="primary" text="Administrar habitaciones" />
+   <Button layoutX="447.0" layoutY="155.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="247.0" styleClass="primary" text="Administrar tipos de habitaciones" />
+   <Button layoutX="466.0" layoutY="317.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="206.0" styleClass="success" text="Guardar copia de seguridad" />
+   <Button layoutX="470.0" layoutY="370.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="198.0" styleClass="primary" text="Cargar copia de seguridad" />
+   <Button layoutX="463.0" layoutY="262.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="213.0" styleClass="success" text="Guardar informacion del hotel" />
+   <Button layoutX="502.0" layoutY="423.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="134.0" styleClass="danger" text="Eliminar hotel" />
+   <Pane fx:id="paneLabelError" layoutX="409.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />
+   <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="420.0" layoutY="525.0" prefHeight="46.0" prefWidth="298.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
+      <font>
+         <Font size="15.0" />
       </font>
    </Label>
 

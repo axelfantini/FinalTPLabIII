@@ -7,13 +7,13 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
     <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
         <image>
@@ -25,17 +25,17 @@
     </ImageView>
    <TableView fx:id="dashboardUsersTableView" layoutX="269.0" layoutY="74.0" opacity="0.93" prefHeight="434.0" prefWidth="572.0">
      <columns>
-       <TableColumn prefWidth="101.60003662109375" text="DNI" >
+       <TableColumn prefWidth="101.60003662109375" text="DNI">
            <cellValueFactory>
                <PropertyValueFactory property="dni" />
            </cellValueFactory>
        </TableColumn>
-       <TableColumn minWidth="0.0" prefWidth="128.79998779296875" text="Nombre" >
+       <TableColumn minWidth="0.0" prefWidth="128.79998779296875" text="Nombre">
            <cellValueFactory>
                <PropertyValueFactory property="name" />
            </cellValueFactory>
        </TableColumn>
-         <TableColumn minWidth="0.0" prefWidth="140.79998779296875" text="Direccion" >
+         <TableColumn minWidth="0.0" prefWidth="140.79998779296875" text="Direccion">
              <cellValueFactory>
                  <PropertyValueFactory property="address" />
              </cellValueFactory>
@@ -57,6 +57,7 @@
    </Label>
    <TextField layoutX="668.0" layoutY="35.0" prefHeight="31.0" prefWidth="134.0" promptText="Buscar..." />
    <Button layoutX="802.0" layoutY="34.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="38.0" styleClass="primary" text="🔎" />
-   <ComboBox fx:id="dashboardUsersCombo" onMouseClicked="#loadComboDashboardUsers" layoutX="269.0" layoutY="34.0" prefHeight="50.0" prefWidth="134.0" promptText="Rol" />
+   <ComboBox fx:id="dashboardUsersCombo" layoutX="269.0" layoutY="34.0" onMouseClicked="#loadComboDashboardUsers" prefHeight="50.0" prefWidth="134.0" promptText="Rol" />
+   <Button fx:id="dashboardUsersCreateUser" layoutX="674.0" layoutY="515.0" mnemonicParsing="false" onMouseClicked="#logout" opacity="0.93" prefHeight="31.0" prefWidth="164.0" styleClass="primary" text="Crear nuevo usuario" />
 
 </AnchorPane>
