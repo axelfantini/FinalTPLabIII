@@ -1,5 +1,6 @@
 package main;
 
+import enums.BedsEnum;
 import enums.ErrorEnum;
 import helpers.SaveInfoHelper;
 import javafx.application.Application;
@@ -8,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import models.Booking;
 import models.ErrorResponse;
 import models.Hotel;
 import models.User;
@@ -18,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 
 public class Main extends Application {
     private static Stage primaryStage;
