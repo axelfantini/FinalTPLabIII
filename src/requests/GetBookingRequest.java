@@ -4,9 +4,10 @@ import models.Booking;
 
 import java.util.List;
 
-public class GetUserBookingRequest {
+public class GetBookingRequest {
     private String search;
     private Boolean finished;
+    private Integer roomNum;
 
     public Boolean getFinished() {
         return finished;
@@ -14,5 +15,9 @@ public class GetUserBookingRequest {
 
     public String getSearch() {
         return search;
+    }
+
+    public Integer getRoomNum() {
+        return roomNum;
     }
 }

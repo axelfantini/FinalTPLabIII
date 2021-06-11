@@ -22,6 +22,10 @@ public class Room extends BaseObject<Integer> implements IBooking {
         this.roomType = roomType;
     }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
     public RoomStatusEnum getStatus() {
         return status;
     }

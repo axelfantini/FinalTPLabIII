@@ -6,9 +6,11 @@ import enums.RoomStatusEnum;
 import requests.*;
 
 import javax.management.relation.Role;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Hotel {
     private String name;
@@ -356,6 +358,49 @@ public class Hotel {
         }
         return errorResponse;
     }
+
+    public List<Booking> getBookings(GetBookingRequest request)
+    {
+        List<Booking> bookingList = bookings;
+        if (request.getFinished() != null) {
+            if (request.getFinished()) {
+                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+            } else if (!request.getFinished()) {
+                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+            }
+        }
+        if (request.getRoomNum()!=null) {
+            bookingList = bookingList.stream().filter(b -> b.getRoomId().equals(request.getRoomNum())).collect(Collectors.toList());
+        }
+        return bookingList;
+    }
+
+    public List<Room> getAvailableRooms(LocalDate startDate, LocalDate endDate) {
+        List<Room> availableRooms = null;
+        rooms.forEach(r -> {
+            List<Booking> roomBookings = r.getBookings();
+            if (!(roomBookings.stream().anyMatch(b -> (startDate.isBefore(b.getExpectedFinishDate())&& startDate.isAfter(b.getStartDate())
+                    && endDate.isBefore(b.getExpectedFinishDate())&& endDate.isAfter(b.getStartDate()))
+                        || (b.getStartDate().isBefore(endDate)&& b.getStartDate().isAfter(startDate)
+                            && b.getExpectedFinishDate().isBefore(endDate)&& b.getExpectedFinishDate().isAfter(startDate)))))
+                        availableRooms.add(r);
+        });
+        return availableRooms;
+    }
+
+    public List<User> getUsers(GetUsersRequest request) {
+        List<User> userList = users;
+        if (request.getSearch() != null) {
+            String search = request.getSearch().toUpperCase();
+            userList = userList.stream().filter(u -> u.getDni().toUpperCase().contains(search) ||
+                    u.getName().toUpperCase().contains(search)).collect(Collectors.toList());
+        }
+        if (request.getRole() != null) {
+            userList = userList.stream().filter(u -> u.getRole().equals(request.getRole())).collect(Collectors.toList());
+        }
+        return userList;
+    }
+
 
     @Override
     public String toString() {
