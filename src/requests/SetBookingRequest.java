@@ -3,8 +3,10 @@ package requests;
 import enums.BedsEnum;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class SetBookingRequest {
+    private UUID id;
     private LocalDate startDate;
     private LocalDate expectedFinishDate;
     private Boolean lateCheckout;
@@ -18,6 +20,10 @@ public class SetBookingRequest {
         this.lateCheckout = lateCheckout;
         this.bedTypes = bedTypes;
         this.roomId = roomId;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public LocalDate getStartDate()

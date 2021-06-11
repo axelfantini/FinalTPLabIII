@@ -8,7 +8,8 @@ public enum ErrorEnum {
     ROOMTYPE_NOT_FOUND ("No existe ese tipo de habitacion"),
     OPEN_FILE_ERROR ("No se pudo abrir el archivo"),
     SAVE_FILE_ERROR ("Error al guardar el archivo"),
-    ROOM_NOT_FOUND ("No existe la habitación");
+    ROOM_NOT_FOUND ("No existe la habitación"),
+    OCCUPIED_ROOM ("Habitación/fecha ocupada");
 
     private final String fancyError;
 

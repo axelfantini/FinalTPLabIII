@@ -174,26 +174,56 @@ public class Hotel {
         User user = users.stream().filter(c -> c.getDni().equals(values.getDni())).findFirst().orElse(null);
         Room room = rooms.stream().filter(r -> r.getRoomNum().equals(values.getRoomId())).findFirst().orElse(null);
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
-        if((!bookings.stream().anyMatch(b -> b.getRoomId().equals(values.getRoomId()))) &&
-                ((!bookings.stream().anyMatch(b -> b.getStartDate().isAfter(values.getExpectedFinishDate())))
-                        || (!bookings.stream().anyMatch(b -> b.getExpectedFinishDate().isBefore(values.getStartDate())))))
-        {
-            Booking booking = new Booking(
-                    values.getStartDate(),
-                    values.getExpectedFinishDate(),
-                    values.getLateCheckout(),
-                    room.getRoomType().getPrice(),
-                    values.getBedTypes(),
-                    values.getRoomId()
-            );
-            bookings.add(booking);
-            room.addBooking(booking);
-            user.addBooking(booking);
-            room.setStatus(RoomStatusEnum.OCCUPIED,"OCCUPIED");
-        }
+            if (!(room.getBookings().stream().anyMatch(b -> (values.getStartDate().isBefore(b.getExpectedFinishDate())&& values.getStartDate().isAfter(b.getStartDate())
+                && values.getExpectedFinishDate().isBefore(b.getExpectedFinishDate())&& values.getExpectedFinishDate().isAfter(b.getStartDate()))
+                || (b.getStartDate().isBefore(values.getExpectedFinishDate())&& b.getStartDate().isAfter(values.getStartDate())
+                && b.getExpectedFinishDate().isBefore(values.getExpectedFinishDate())&& b.getExpectedFinishDate().isAfter(values.getStartDate()))
+                ||b.getFinished()||b.getCanceled()||b.getLogicalDelete())))
+            {
+                Booking booking = new Booking(
+                        values.getStartDate(),
+                        values.getExpectedFinishDate(),
+                        values.getLateCheckout(),
+                        room.getRoomType().getPrice(),
+                        values.getBedTypes(),
+                        values.getRoomId()
+                );
+                bookings.add(booking);
+                room.addBooking(booking);
+                user.addBooking(booking);
+                room.setStatus(RoomStatusEnum.OCCUPIED,"OCCUPIED");
+            }
+            else
+            {
+                errorResponse.setSuccess(false);
+                errorResponse.setError(ErrorEnum.OCCUPIED_ROOM);
+            }
         return errorResponse;
     }
 
+    public ErrorResponse<Booking> setBooking(SetBookingRequest request)
+    {
+        ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(request.getId())).findFirst().orElse(null);
+        if(booking!=null) {
+            if (!(bookings.stream().anyMatch(b -> (request.getStartDate().isBefore(b.getExpectedFinishDate())&& request.getStartDate().isAfter(b.getStartDate())
+                && request.getExpectedFinishDate().isBefore(b.getExpectedFinishDate())&& request.getExpectedFinishDate().isAfter(b.getStartDate()))
+                || (b.getStartDate().isBefore(request.getExpectedFinishDate())&& b.getStartDate().isAfter(request.getStartDate())
+                && b.getExpectedFinishDate().isBefore(request.getExpectedFinishDate())&& b.getExpectedFinishDate().isAfter(request.getStartDate()))
+                ||b.getFinished()||b.getCanceled()||b.getLogicalDelete())))
+            {
+                booking.setValues(request);
+                errorResponse.setSuccess(true);
+                errorResponse.setBody(booking);
+            }
+            else
+            {
+                errorResponse.setSuccess(false);
+                errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
+            }
+        }
+        return errorResponse;
+    }
     public void createRoomsRange(List<CreateRoomRequest> _rooms)
     {
         _rooms.forEach(r -> this.createRoom(r));
@@ -382,7 +412,8 @@ public class Hotel {
             if (!(roomBookings.stream().anyMatch(b -> (startDate.isBefore(b.getExpectedFinishDate())&& startDate.isAfter(b.getStartDate())
                     && endDate.isBefore(b.getExpectedFinishDate())&& endDate.isAfter(b.getStartDate()))
                         || (b.getStartDate().isBefore(endDate)&& b.getStartDate().isAfter(startDate)
-                            && b.getExpectedFinishDate().isBefore(endDate)&& b.getExpectedFinishDate().isAfter(startDate)))))
+                            && b.getExpectedFinishDate().isBefore(endDate)&& b.getExpectedFinishDate().isAfter(startDate)) ||
+                            b.getFinished()||b.getCanceled()||b.getLogicalDelete())))
                         availableRooms.add(r);
         });
         return availableRooms;
