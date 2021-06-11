@@ -34,10 +34,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class ViewController implements Initializable {
 
@@ -125,6 +122,20 @@ public class ViewController implements Initializable {
     public Button userDetailsBtnDelete;
     public ComboBox<RoleEnum> userDetailsComboRole;
 
+    public Button bookingDetailsBtnBack;
+    public Button bookingDetailsBtnEdit;
+    public Button bookingDetailsBtnCancel;
+    public Button bookingDetailsBtnFinish;
+    public Button bookingDetailsBtnDelete;
+    public DatePicker bookingDetailsDateStart;
+    public DatePicker bookingDetailsDateEnd;
+    public CheckBox bookingDetailsCheckLateCheckout;
+    public TextField bookingDetailsTxtRoomNum;
+    public ComboBox<BedsEnum> bookingDetailsComboBedTypes;
+    public TextField bookingDetailsTxtPrice;
+    public Button bookingDetailsBtnConsumption;
+    public TextField bookingDetailsTxtConsumption;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         switch (location.toString().split("/views/")[1])
@@ -170,7 +181,7 @@ public class ViewController implements Initializable {
                 break;
             case "DashboardUsers.fxml":
                 loadTableViewDashboardUsers();
-                loadUsersToTable(Main.getActualHotel().getUsers());
+                loadUsersToTable(Main.getActualHotel().getUsers(new GetUsersRequest()));
                 if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
                     btnMenuAdminPanel.setVisible(false);
                 break;
@@ -180,6 +191,19 @@ public class ViewController implements Initializable {
                 if(errorResponse.getSuccess())
                 {
                     User user = errorResponse.getBody();
+                    if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+                    {
+                        if(user.getRole() != RoleEnum.USER)
+                        {
+                            userDetailsBtnDelete.setVisible(false);
+                            userDetailsTxtPassword.setVisible(false);
+                        }
+
+                        userDetailsComboRole.setDisable(true);
+                        btnMenuAdminPanel.setVisible(false);
+                    }
+                    if(userId == Main.getActualUser().getId())
+                        userDetailsBtnDelete.setVisible(false);
                     userDetailsTxtName.setText(user.getName());
                     userDetailsTxtDNI.setText(user.getDni());
                     userDetailsTxtCountry.setText(user.getCountry());
@@ -201,7 +225,36 @@ public class ViewController implements Initializable {
                             RoleEnum.ADMIN);
                     userDetailsComboRole.setValue(user.getRole());
                 }
+                break;
+            case "BookingDetails.fxml":
+                UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+                ErrorResponse<Booking> errorResponse2 = Main.getActualHotel().getBooking(bookingId);
+                if(errorResponse2.getSuccess())
+                {
+                    Booking booking = errorResponse2.getBody();
+                    bookingDetailsDateStart.setValue(booking.getStartDate());
+                    bookingDetailsDateEnd.setValue(booking.getExpectedFinishDate());
+                    bookingDetailsCheckLateCheckout.setSelected(booking.getLateCheckout());
+                    bookingDetailsTxtRoomNum.setText(booking.getRoomId().toString());
+                    bookingDetailsTxtPrice.setText(booking.getTotalPrice().toString());
+                    bookingDetailsComboBedTypes.setConverter(new StringConverter<BedsEnum>() {
+                        @Override
+                        public String toString(BedsEnum bedsEnum) {
+                            return bedsEnum.getName();
+                        }
 
+                        @Override
+                        public BedsEnum fromString(String string) {
+                            return null;
+                        }
+                    });
+                    bookingDetailsComboBedTypes.getItems().addAll(
+                            BedsEnum.DOUBLE_BED,
+                            BedsEnum.TWO_SINGLES,
+                            BedsEnum.DOUBLE_BED_AND_SINGLES,
+                            BedsEnum.FOUR_SINGLES);
+                    bookingDetailsComboBedTypes.setValue(booking.getBedTypes());
+                }
                 break;
         }
     }
@@ -279,6 +332,19 @@ public class ViewController implements Initializable {
         labelError.setVisible(true);
         timer(() -> {
             labelError.setVisible(false); paneLabelError.setVisible(false);
+        }, seconds);
+    }
+
+    private void showSuccess(String text, Integer seconds)
+    {
+        paneLabelError.setStyle("-fx-background-color: green");
+        labelError.setText(text);
+        paneLabelError.setVisible(true);
+        labelError.setVisible(true);
+        timer(() -> {
+            labelError.setVisible(false);
+            paneLabelError.setVisible(false);
+            paneLabelError.setStyle("-fx-background-color: red");
         }, seconds);
     }
 
@@ -386,6 +452,15 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void toBookingDetails()
+    {
+        try {
+            Main.changeStage("/views/BookingDetails.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
     public void loadRoomTypes(MouseEvent mouseEvent)
     {
         if(setupStep5ComboType.getItems().size()  == 0)
@@ -465,7 +540,8 @@ public class ViewController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Booking data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data);
+                            params.setItem("bookingId", data.getId().toString());
+                            toBookingDetails();
                         });
                     }
                     @Override
@@ -625,6 +701,33 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void deleteUser()
+    {
+        String userId = params.getValue("userId");
+        ErrorResponse<User> errorResponse = Main.getActualHotel().deleteUser(userId);
+        if(errorResponse.getSuccess())
+            toDashboardUsers(null);
+        else
+            showError("Error borrando el usuario", 1);
+    }
+
+    public void editUser()
+    {
+        String name = userDetailsTxtName.getText();
+        String dni = userDetailsTxtDNI.getText();
+        String country = userDetailsTxtCountry.getText();
+        String address = userDetailsTxtAddress.getText();
+        RoleEnum role = userDetailsComboRole.getValue();
+        String password = userDetailsTxtPassword.getText();
+        if(checkUserEdit(name, dni, country, address))
+        {
+            ErrorResponse<User> errorResponse = Main.getActualHotel().editUser(new SetUserRequest(dni, name, country, address, password, role));
+            if(errorResponse.getSuccess())
+                showSuccess("Usuario editado con exito.", 1);
+            else
+                showError("Error al editar el usuario", 1);
+        }
+    }
 
     public void createHotel(MouseEvent mouseEvent) {
         String name = setupTxtName.getText();
@@ -754,6 +857,32 @@ public class ViewController implements Initializable {
         if(address.isEmpty())
         {
             showError("Debes ingresar un nombre.", 1);
+            response = false;
+        }
+        return response;
+    }
+
+    private Boolean checkUserEdit(String name, String dni, String country, String address)
+    {
+        Boolean response = true;
+        if(name.isEmpty())
+        {
+            showError("Debes ingresar un nombre.", 1);
+            response = false;
+        }
+        if(dni.isEmpty())
+        {
+            showError("Debes ingresar un DNI.", 1);
+            response = false;
+        }
+        if(country.isEmpty())
+        {
+            showError("Debes ingresar un pais.", 1);
+            response = false;
+        }
+        if(address.isEmpty())
+        {
+            showError("Debes ingresar una direccion.", 1);
             response = false;
         }
         return response;

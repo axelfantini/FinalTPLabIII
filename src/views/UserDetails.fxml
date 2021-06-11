@@ -32,20 +32,26 @@
             <Font size="25.0" />
         </font>
     </Label>
-   <Button fx:id="userDetailsBtnBack" layoutX="33.0" layoutY="14.0" onMouseClicked="#toDashboardUsers" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
+   <Button fx:id="userDetailsBtnBack" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#toDashboardUsers" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
    <Pane layoutX="321.0" layoutY="75.0" opacity="0.93" prefHeight="435.0" prefWidth="518.0" style="-fx-background-color: white;" />
    <TextField fx:id="userDetailsTxtName" layoutX="389.0" layoutY="168.0" prefWidth="151.0" promptText="Nombre" />
    <TextField fx:id="userDetailsTxtDNI" disable="true" editable="false" layoutX="389.0" layoutY="212.0" prefWidth="151.0" promptText="DNI" />
    <TextField fx:id="userDetailsTxtCountry" layoutX="389.0" layoutY="253.0" prefWidth="151.0" promptText="Pais" />
    <TextField fx:id="userDetailsTxtAddress" layoutX="389.0" layoutY="296.0" prefWidth="151.0" promptText="Dirección" />
    <PasswordField fx:id="userDetailsTxtPassword" layoutX="389.0" layoutY="341.0" prefWidth="151.0" promptText="Contraseña" />
-   <Button fx:id="userDetailsBtnEdit" layoutX="431.0" layoutY="447.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Editar" />
+   <Button fx:id="userDetailsBtnEdit" layoutX="431.0" layoutY="447.0" mnemonicParsing="false" onMouseClicked="#editUser" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Editar" />
    <Label layoutX="410.0" layoutY="105.0" text="Detalles">
       <font>
          <Font size="31.0" />
       </font>
    </Label>
    <Button fx:id="userDetailsBtnBooking" layoutX="639.0" layoutY="298.0" mnemonicParsing="false" styleClass="primary" text="Crear Reserva" />
-   <Button fx:id="userDetailsBtnDelete" layoutX="631.0" layoutY="238.0" mnemonicParsing="false" prefWidth="122.0" styleClass="danger" text="Eliminar Usuario" />
+   <Button fx:id="userDetailsBtnDelete" onMouseClicked="#deleteUser" layoutX="631.0" layoutY="238.0" mnemonicParsing="false" prefWidth="122.0" styleClass="danger" text="Eliminar Usuario" />
    <ComboBox fx:id="userDetailsComboRole" layoutX="388.0" layoutY="387.0" prefWidth="151.0" promptText="Rol" />
+   <Pane fx:id="paneLabelError" layoutX="420.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />
+   <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="431.0" layoutY="525.0" prefHeight="46.0" prefWidth="298.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
+      <font>
+         <Font size="15.0" />
+      </font>
+   </Label>
 </AnchorPane>

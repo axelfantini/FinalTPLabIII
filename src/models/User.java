@@ -127,5 +127,9 @@ public class User extends BaseObject<String> implements IBooking {
         this.name = request.getName();
         this.address = request.getAddress();
         this.country = request.getCountry();
+        String newPass = request.getPassword();
+        if(newPass != null && newPass != "")
+            this.password = newPass;
+        this.role = request.getRole();
     }
 }

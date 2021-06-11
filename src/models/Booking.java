@@ -17,8 +17,8 @@ public class Booking extends BaseObject<UUID> {
     private Integer roomId;
     private Double roomPrice;
     private BedsEnum bedTypes;
-    private Double extraConsumption;
-    private Double totalPrice;
+    private Double extraConsumption = 0.0;
+    private Double totalPrice = 0.0;
 
     public Booking(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout, Double roomPrice, BedsEnum bedTypes, Integer roomNum) {
         this.startDate = startDate;
