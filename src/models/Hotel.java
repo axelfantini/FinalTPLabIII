@@ -196,12 +196,30 @@ public class Hotel {
         return errorResponse;
     }
 
+    public ErrorResponse addConsumption(UUID bookingId, Double consumption)
+    {
+        ErrorResponse errorResponse = new ErrorResponse();
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId) && !b.logicalDelete).findFirst().orElse(null);
+        if(booking != null)
+        {
+            booking.addExtraConsumption(consumption);
+            errorResponse.setSuccess(true);
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.BOOKING_NOT_FOUND);
+        }
+        return errorResponse;
+    }
+
     public ErrorResponse<Booking> setBooking(SetBookingRequest request)
     {
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
+        Room room = rooms.stream().filter(r -> r.getRoomNum() == request.getRoomId() && !r.logicalDelete).findFirst().orElse(null);
         Booking booking = bookings.stream().filter(b -> b.getId().equals(request.getId()) && !b.getLogicalDelete()).findFirst().orElse(null);
-        if(booking!=null) {
-            if (isValidDate(bookings, request.getStartDate(), request.getExpectedFinishDate()))
+        if(booking!=null && room != null) {
+            if (isValidDate(room.getBookings(), request.getStartDate(), request.getExpectedFinishDate()))
             {
                 booking.setValues(request);
                 errorResponse.setSuccess(true);
@@ -210,8 +228,13 @@ public class Hotel {
             else
             {
                 errorResponse.setSuccess(false);
-                errorResponse.setError(ErrorEnum.USER_NOT_FOUND);
+                errorResponse.setError(ErrorEnum.BOOKING_DATE_INVALID);
             }
+        }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.BOOKING_NOT_FOUND);
         }
         return errorResponse;
     }
@@ -349,21 +372,26 @@ public class Hotel {
         return response;
     }
 
-    public void checkout(String dni, Integer roomId)
+    public ErrorResponse<Booking> checkout(UUID bookingId)
     {
-        User user = users.stream().filter(c -> c.getDni().equals(dni) && !c.getLogicalDelete()).findFirst().orElse(null);
-        if(user != null)
+        ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId) && !b.getLogicalDelete()).findFirst().orElse(null);
+        if(booking != null)
         {
-            Booking booking = user.getBookingByRoomId(roomId);
-            if(booking != null)
-            {
-                booking.finish();
-                booking.setTotalPrice(booking.getTotalPrice());
-                Room room = rooms.stream().filter(c -> c.getRoomNum().equals(roomId) && !c.getLogicalDelete()).findFirst().orElse(null);
-                if(room != null)
-                    room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
-            }
+            booking.finish();
+            booking.setTotalPrice(booking.getTotalPrice());
+            Room room = rooms.stream().filter(c -> c.getRoomNum().equals(booking.getRoomId()) && !c.getLogicalDelete()).findFirst().orElse(null);
+            if(room != null)
+                room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
+            errorResponse.setSuccess(true);
+            errorResponse.setBody(booking);
         }
+        else
+        {
+            errorResponse.setSuccess(false);
+            errorResponse.setError(ErrorEnum.BOOKING_NOT_FOUND);
+        }
+        return errorResponse;
     }
 
     public ErrorResponse<Room> deleteRoom(Integer roomNum)

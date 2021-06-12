@@ -127,9 +127,8 @@ public class ViewController implements Initializable {
     public DatePicker bookingDetailsDateStart;
     public DatePicker bookingDetailsDateEnd;
     public CheckBox bookingDetailsCheckLateCheckout;
-    public TextField bookingDetailsTxtRoomNum;
+    public ComboBox<Room> bookingDetailsComboRoomNum;
     public ComboBox<BedsEnum> bookingDetailsComboBedTypes;
-    public TextField bookingDetailsTxtPrice;
     public Button bookingDetailsBtnConsumption;
     public TextField bookingDetailsTxtConsumption;
 
@@ -153,6 +152,13 @@ public class ViewController implements Initializable {
     public TextField createUserTxtAddress;
     public PasswordField createUserTxtPassword;
     public ComboBox<RoleEnum> createUserComboRole;
+
+    public Label bookingInfoTxtRoomNum;
+    public Label bookingInfoTxtDays;
+    public Label bookingInfoBedsType;
+    public Label bookingInfoTxtLateCheckout;
+    public Label bookingInfoTxtConsumption;
+    public Label bookingInfoTxtPrice;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -185,6 +191,25 @@ public class ViewController implements Initializable {
             case "CreateUser.fxml":
                 initializeCreateUser();
                 break;
+            case "BookingInfo.fxml":
+                initializeBookingInfo();
+                break;
+        }
+    }
+
+    private void initializeBookingInfo()
+    {
+        UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+        ErrorResponse<Booking> errorResponse = Main.getActualHotel().getBooking(bookingId);
+        if(errorResponse.getSuccess())
+        {
+            Booking booking = errorResponse.getBody();
+            bookingInfoTxtRoomNum.setText(booking.getRoomId().toString());
+            bookingInfoTxtDays.setText(ChronoUnit.DAYS.between(booking.getStartDate(), booking.getFinishDate()) + " días");
+            bookingInfoBedsType.setText(booking.getBedTypes().getName());
+            bookingInfoTxtLateCheckout.setText(booking.getLateCheckout() == true ? "Si" : "No");
+            bookingInfoTxtConsumption.setText(booking.getExtraConsumption().toString());
+            bookingInfoTxtPrice.setText(booking.getTotalPrice().toString());
         }
     }
 
@@ -334,6 +359,30 @@ public class ViewController implements Initializable {
             paneLabelError.setVisible(false);
             paneLabelError.setStyle("-fx-background-color: red");
         }, seconds);
+    }
+
+    public void checkout()
+    {
+        UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+        ErrorResponse<Booking> errorResponse = Main.getActualHotel().checkout(bookingId);
+        if(errorResponse.getSuccess())
+        {
+            if(errorResponse.getBody().getFinished())
+                toBookingInfo();
+            else
+                showSuccess("La reserva fue cancelada con exito", 1);
+        }
+        else
+            showError(errorResponse.getError().getFancyError(), 1);
+    }
+
+    public void toBookingInfo()
+    {
+        try {
+            Main.changeStage("/views/BookingInfo.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
     }
 
     public void toSetup(MouseEvent mouseEvent){
@@ -529,7 +578,12 @@ public class ViewController implements Initializable {
                         btn.setOnAction((ActionEvent event) -> {
                             Booking data = getTableView().getItems().get(getIndex());
                             params.setItem("bookingId", data.getId().toString());
-                            toBookingDetails();
+                            if(data.getFinished())
+                                toBookingInfo();
+                            else if(data.getCanceled())
+                                showError("Esa reserva fue cancelada", 1);
+                            else
+                                toBookingDetails();
                         });
                     }
                     @Override
@@ -881,6 +935,49 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void editBooking() {
+        LocalDate startDate = bookingDetailsDateStart.getValue();
+        LocalDate endDate = bookingDetailsDateEnd.getValue();
+        Room room = bookingDetailsComboRoomNum.getValue();
+        Integer roomNum = null;
+        if(room != null)
+            roomNum = room.getRoomNum();
+        Boolean lateCheckout = bookingDetailsCheckLateCheckout.isSelected();
+        BedsEnum bedsType = bookingDetailsComboBedTypes.getValue();
+        UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+
+        if(checkEditBooking(startDate, endDate, lateCheckout, roomNum, bedsType, bookingId))
+        {
+            SetBookingRequest booking = new SetBookingRequest(startDate, endDate, lateCheckout, roomNum, bedsType, bookingId);
+            ErrorResponse<Booking> response = Main.getActualHotel().setBooking(booking);
+            if(response.getSuccess())
+            {
+                showSuccess("Reserva editada con exito", 1);
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+    }
+
+    public void addConsumption()
+    {
+        UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+        String consumption = bookingDetailsTxtConsumption.getText();
+        if(isDouble(consumption))
+        {
+            ErrorResponse errorResponse = Main.getActualHotel().addConsumption(bookingId, Double.parseDouble(consumption));
+            if(errorResponse.getSuccess())
+            {
+                bookingDetailsTxtConsumption.setText("");
+                showSuccess("La consumicion se añadio correctamente", 1);
+            }
+            else
+                showError(errorResponse.getError().getFancyError(), 1);
+        }
+        else
+            showError("El precio debe ser un numero", 1);
+    }
+
     public void createBooking() {
         String dni = createBookingTxtDni.getText();
         LocalDate startDate = createBookingDateStart.getValue();
@@ -903,6 +1000,42 @@ public class ViewController implements Initializable {
             else
                 showError(response.getError().getFancyError(), 1);
         }
+    }
+
+    private Boolean checkEditBooking(LocalDate startDate, LocalDate endDate, Boolean lateCheckout, Integer roomNum, BedsEnum bedsType, UUID id)
+    {
+        Boolean response = true;
+        if(startDate == null)
+        {
+            showError("Fecha de inicio invalida", 1);
+            response = false;
+        }
+        if(endDate == null)
+        {
+            showError("Fecha de finalizacion invalida", 1);
+            response = false;
+        }
+        if(lateCheckout == null)
+        {
+            showError("Late checkout invalido", 1);
+            response = false;
+        }
+        if(roomNum == null)
+        {
+            showError("Numero de habitacion invalido", 1);
+            response = false;
+        }
+        if(bedsType == null)
+        {
+            showError("Tipo de camas invalido", 1);
+            response = false;
+        }
+        if(id == null)
+        {
+            showError("Error de id", 1);
+            response = false;
+        }
+        return response;
     }
 
     private Boolean checkBooking(LocalDate startDate, LocalDate endDate, Boolean lateCheckout, Integer roomNum, String dni, BedsEnum bedsType)
@@ -1099,7 +1232,7 @@ public class ViewController implements Initializable {
     {
         LocalDate startDate = createBookingDateStart.getValue();
         LocalDate endDate = createBookingDateEnd.getValue();
-        if(startDate != null && createBookingDateEnd.getValue() != null)
+        if(startDate != null && endDate != null)
         {
             if(startDate.isAfter(endDate) ||
                     startDate.equals(endDate))
@@ -1214,6 +1347,31 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void loadAvailableBookings()
+    {
+        LocalDate startDate = bookingDetailsDateStart.getValue();
+        LocalDate endDate = bookingDetailsDateEnd.getValue();
+        if(startDate != null && endDate != null)
+        {
+            if(startDate.isAfter(endDate) ||
+                    startDate.equals(endDate))
+            {
+                bookingDetailsDateStart.setValue(null);
+                bookingDetailsDateEnd.setValue(null);
+                showError("Fechas no validas.", 1);
+                bookingDetailsComboRoomNum.getItems().clear();
+            }
+            else
+            {
+                bookingDetailsComboRoomNum.getItems().clear();
+                List<Room> roomList = Main.getActualHotel().getAvailableRooms(startDate, endDate);
+                bookingDetailsComboRoomNum.getItems().addAll(roomList);
+            }
+        }
+        else
+            bookingDetailsComboRoomNum.getItems().clear();
+    }
+
     public void initializeBookingsDetails(){
         UUID bookingId = UUID.fromString((params.getValue("bookingId")));
         ErrorResponse<Booking> errorResponse2 = Main.getActualHotel().getBooking(bookingId);
@@ -1223,8 +1381,21 @@ public class ViewController implements Initializable {
             bookingDetailsDateStart.setValue(booking.getStartDate());
             bookingDetailsDateEnd.setValue(booking.getExpectedFinishDate());
             bookingDetailsCheckLateCheckout.setSelected(booking.getLateCheckout());
-            bookingDetailsTxtRoomNum.setText(booking.getRoomId().toString());
-            bookingDetailsTxtPrice.setText(booking.getTotalPrice().toString());
+            bookingDetailsComboRoomNum.setConverter(new StringConverter<Room>() {
+                @Override
+                public String toString(Room room) {
+                    return room.getRoomNum().toString();
+                }
+
+                @Override
+                public Room fromString(String string) {
+                    return null;
+                }
+            });
+            loadAvailableBookings();
+            ErrorResponse<Room> errorResponse = Main.getActualHotel().getRoom(booking.getRoomId());
+            if(errorResponse.getSuccess())
+                bookingDetailsComboRoomNum.setValue(errorResponse.getBody());
             bookingDetailsComboBedTypes.setConverter(new StringConverter<BedsEnum>() {
                 @Override
                 public String toString(BedsEnum bedsEnum) {

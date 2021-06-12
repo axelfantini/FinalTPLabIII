@@ -14,7 +14,8 @@ public class SetBookingRequest {
     private BedsEnum bedTypes;
 
     public SetBookingRequest(LocalDate startDate, LocalDate expectedFinishDate, Boolean lateCheckout,
-                             Integer roomId, BedsEnum bedTypes) {
+                             Integer roomId, BedsEnum bedTypes, UUID bookingId) {
+        this.id = bookingId;
         this.startDate = startDate;
         this.expectedFinishDate = expectedFinishDate;
         this.lateCheckout = lateCheckout;
