@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="586.0" prefWidth="879.0" stylesheets="@styles/bootstrap3.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewController">
+    <ImageView fitHeight="586.0" fitWidth="879.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@img/bg-dashboard.jpg" />
+        </image>
+        <viewport>
+            <Rectangle2D />
+        </viewport>
+    </ImageView>
+   <Pane layoutX="104.0" layoutY="63.0" opacity="0.93" prefHeight="459.0" prefWidth="670.0" style="-fx-background-color: white;" />
+   <Label layoutX="252.0" layoutY="100.0" text="Informacion de la Reserva">
+      <font>
+         <Font size="34.0" />
+      </font>
+   </Label>
+   <Label layoutX="261.0" layoutY="197.0" text="Habitacion:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="261.0" layoutY="235.0" text="Dias de hospedaje:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="261.0" layoutY="274.0" text="Tipos de camas:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="259.0" layoutY="313.0" text="Tuvo late checkout:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="261.0" layoutY="353.0" text="Cargos de consumiciones:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="261.0" layoutY="397.0" text="Precio total:">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Button onMouseClicked="#toDashboardBookings" layoutX="376.0" layoutY="466.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="126.0" text="Volver al Inicio" />
+   <Label fx:id="bookingInfoTxtRoomNum" alignment="CENTER" layoutX="569.0" layoutY="197.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label fx:id="bookingInfoTxtDays" layoutX="569.0" layoutY="235.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label fx:id="bookingInfoBedsType" layoutX="569.0" layoutY="274.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label fx:id="bookingInfoTxtLateCheckout" layoutX="569.0" layoutY="313.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label fx:id="bookingInfoTxtConsumption" layoutX="569.0" layoutY="353.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Label fx:id="bookingInfoTxtPrice" layoutX="569.0" layoutY="397.0" text="0">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+</AnchorPane>
