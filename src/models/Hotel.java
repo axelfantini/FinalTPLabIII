@@ -425,7 +425,7 @@ public class Hotel {
             if (request.getFinished()) {
                 bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true) && !b.getLogicalDelete()).collect(Collectors.toList());
             } else if (!request.getFinished()) {
-                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true) && !b.getLogicalDelete()).collect(Collectors.toList());
+                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(false) && !b.getLogicalDelete()).collect(Collectors.toList());
             }
         }
         if (request.getRoomNum()!=null) {

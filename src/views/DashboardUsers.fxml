@@ -55,9 +55,9 @@
          <Font size="25.0" />
       </font>
    </Label>
-   <TextField layoutX="668.0" layoutY="35.0" prefHeight="31.0" prefWidth="134.0" promptText="Buscar..." />
-   <Button layoutX="802.0" layoutY="34.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="38.0" styleClass="primary" text="🔎" />
-   <ComboBox fx:id="dashboardUsersCombo" layoutX="269.0" layoutY="34.0" onMouseClicked="#loadComboDashboardUsers" prefHeight="50.0" prefWidth="134.0" promptText="Rol" />
+   <TextField fx:id="dashboardUsersTxtSearch" layoutX="668.0" layoutY="35.0" prefHeight="31.0" prefWidth="134.0" promptText="Buscar..." />
+   <Button onMouseClicked="#applyUserFilters" layoutX="802.0" layoutY="34.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="38.0" styleClass="primary" text="🔎" />
+   <ComboBox onAction="#applyUserFilters" fx:id="dashboardUsersCombo" layoutX="269.0" layoutY="34.0" onMouseClicked="#loadComboDashboardUsers" prefHeight="50.0" prefWidth="134.0" promptText="Rol" />
    <Button fx:id="dashboardUsersCreateUser" layoutX="674.0" layoutY="515.0" mnemonicParsing="false" onMouseClicked="#toCreateUser" opacity="0.93" prefHeight="31.0" prefWidth="164.0" styleClass="primary" text="Crear nuevo usuario" />
 
 </AnchorPane>
