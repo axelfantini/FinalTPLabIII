@@ -20,10 +20,6 @@ public class RoomType extends BaseObject<UUID> {
         return name;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
-
     public Double getPrice() {
         return price;
     }

@@ -43,12 +43,7 @@ public class CreateBookingRequest {
         return dni;
     }
 
-
     public BedsEnum getBedTypes() {
         return bedTypes;
-    }
-
-    public Double getExtraConsumption() {
-        return extraConsumption;
     }
 }

@@ -3,11 +3,8 @@ package helpers;
 import com.google.gson.Gson;
 import enums.ErrorEnum;
 import models.ErrorResponse;
-import models.Hotel;
-import models.Room;
 
 import java.io.*;
-import java.util.List;
 
 public class SaveInfoHelper {
     public static <T> ErrorResponse<T> saveFile(T item, String path){
