@@ -35,14 +35,14 @@
     </Label>
     <Button fx:id="createBookingBtnBack" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
     <Pane layoutX="321.0" layoutY="75.0" opacity="0.93" prefHeight="435.0" prefWidth="518.0" style="-fx-background-color: white;" />
-    <Button fx:id="createBookingBtnCreate" layoutX="546.0" layoutY="458.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Crear" />
+    <Button fx:id="createBookingBtnCreate" onMouseClicked="#createBooking" layoutX="546.0" layoutY="458.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Crear" />
     <Label layoutX="486.0" layoutY="84.0" text="Crear Reserva">
         <font>
             <Font size="31.0" />
         </font>
     </Label>
-    <DatePicker fx:id="createBookingDateStart" layoutX="382.0" layoutY="183.0" promptText="Fecha de Inicio" />
-    <DatePicker fx:id="createBookingDateEnd" layoutX="595.0" layoutY="183.0" promptText="Fecha Finalizacion" />
+    <DatePicker fx:id="createBookingDateStart" onAction="#checkBookingDates" layoutX="382.0" layoutY="183.0" prefWidth="177.0" promptText="Fecha de Inicio" />
+    <DatePicker fx:id="createBookingDateEnd" onAction="#checkBookingDates" layoutX="595.0" layoutY="183.0" prefWidth="178.0" promptText="Fecha Finalizacion" />
     <CheckBox fx:id="createBookingCheckLateCheckout" layoutX="496.0" layoutY="282.0" mnemonicParsing="false" text="Late checkout" />
     <ComboBox fx:id="createBookingComboBedsType" layoutX="493.0" layoutY="319.0" prefWidth="177.0" promptText="Tipo de Camas" />
     <TextField fx:id="createBookingTxtPrice" disable="true" editable="false" layoutX="493.0" layoutY="410.0" prefWidth="177.0" promptText="Precio" />
@@ -52,7 +52,7 @@
             <Font size="15.0" />
         </font>
     </Label>
-   <ComboBox fx:id="createBookingComboRoomNum" layoutX="491.0" layoutY="237.0" prefWidth="177.0" promptText="Num habitacion" />
+   <ComboBox fx:id="createBookingComboRoomNum" onAction="#selectRoomNum" layoutX="491.0" layoutY="237.0" prefWidth="177.0" promptText="Num habitacion" />
    <TextField fx:id="createBookingTxtRoomType" disable="true" editable="false" layoutX="494.0" layoutY="364.0" prefWidth="177.0" promptText="Tipo de habitacion" />
    <TextField fx:id="createBookingTxtDni" disable="true" editable="false" layoutX="494.0" layoutY="136.0" prefWidth="177.0" promptText="DNI" />
 </AnchorPane>
