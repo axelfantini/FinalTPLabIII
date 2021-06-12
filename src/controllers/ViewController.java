@@ -160,6 +160,26 @@ public class ViewController implements Initializable {
     public Label bookingInfoTxtConsumption;
     public Label bookingInfoTxtPrice;
 
+    public TableView<Room> createRoomTableView;
+    public TableColumn createRoomTableColumnRoomType;
+    public TableColumn createRoomTableColumnStatus;
+    public TableColumn createRoomTableColumnEdit;
+    public TextField createRoomTxtNum;
+    public TextField createRoomComboReason;
+    public Button createRoomBtnEnd;
+    public Button createRoomBtnAdd;
+    public ComboBox<RoomStatusEnum> createRoomComboStatus;
+    public ComboBox<RoomType> createRoomComboType;
+
+    public TableView<RoomType> createRoomTypeTableView;
+    public TextField createRoomTypeHiddenId;
+    public TextField createRoomTypeTxtName;
+    public TextField createRoomTypeTxtCapacity;
+    public TextField createRoomTypeTxtPrice;
+    public Button createRoomTypeBtnNext;
+    public Button createRoomTypeBtnAdd;
+    public TableColumn createRoomTypeTableColumnEdit;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         switch (location.toString().split("/views/")[1])
@@ -194,7 +214,128 @@ public class ViewController implements Initializable {
             case "BookingInfo.fxml":
                 initializeBookingInfo();
                 break;
+            case "CreateRoom.fxml":
+                initializeCreateRoom();
+                break;
+            case "CreateRoomType.fxml":
+                initializeCreateRoomType();
+                break;
         }
+    }
+
+    private void initializeCreateRoom(){
+        createRoomTableColumnRoomType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomType>, ObservableValue<String>>) p -> {
+            if (p.getValue() != null && p.getValue().getRoomType() != null) {
+                return new SimpleStringProperty(p.getValue().getRoomType().getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+        createRoomTableColumnStatus.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Room, RoomStatusEnum>, ObservableValue<String>>) p -> {
+            if (p.getValue() != null && p.getValue().getStatus() != null) {
+                return new SimpleStringProperty(p.getValue().getStatus().getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+
+        Callback<TableColumn<Room, Void>, TableCell<Room, Void>> cellFactory = new Callback<TableColumn<Room, Void>, TableCell<Room, Void>>() {
+            @Override
+            public TableCell<Room, Void> call(final TableColumn<Room, Void> param) {
+                final TableCell<Room, Void> cell = new TableCell<Room, Void>() {
+                    private final Button btn = new Button("Editar");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Room data = getTableView().getItems().get(getIndex());
+                            createRoomTxtNum.setText(data.getRoomNum().toString());
+                            createRoomTxtNum.setDisable(true);
+                            createRoomComboType.setValue(data.getRoomType());
+                            createRoomComboStatus.setValue(data.getStatus());
+                            createRoomComboReason.setText(data.getStatusReason());
+                            createRoomBtnAdd.setText("Editar");
+                            createRoomBtnAdd.setOnMouseClicked((ActionEvent) -> editRoomAdminPanel());
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        createRoomTableColumnEdit.setCellFactory(cellFactory);
+
+        createRoomTableView.getItems().addAll(Main.getActualHotel().getRooms());
+
+        createRoomComboStatus.setConverter(new StringConverter<RoomStatusEnum>() {
+            @Override
+            public String toString(RoomStatusEnum roomStatusEnum) {
+                return roomStatusEnum.getName();
+            }
+
+            @Override
+            public RoomStatusEnum fromString(String string) {
+                return null;
+            }
+        });
+        createRoomComboStatus.getItems().addAll(
+                RoomStatusEnum.NOT_AVAILABLE,
+                RoomStatusEnum.OCCUPIED,
+                RoomStatusEnum.UNOCCUPIED);
+
+        createRoomComboType.setConverter(new StringConverter<RoomType>() {
+            @Override
+            public String toString(RoomType roomType) {
+                return roomType.getName();
+            }
+
+            @Override
+            public RoomType fromString(String string) {
+                return null;
+            }
+        });
+        createRoomComboType.getItems().addAll(Main.getActualHotel().getRoomTypes());
+
+    }
+
+    private void initializeCreateRoomType(){
+        Callback<TableColumn<RoomType, Void>, TableCell<RoomType, Void>> cellFactory = new Callback<TableColumn<RoomType, Void>, TableCell<RoomType, Void>>() {
+            @Override
+            public TableCell<RoomType, Void> call(final TableColumn<RoomType, Void> param) {
+                final TableCell<RoomType, Void> cell = new TableCell<RoomType, Void>() {
+                    private final Button btn = new Button("Editar");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            RoomType data = getTableView().getItems().get(getIndex());
+                            createRoomTypeTxtCapacity.setText(String.valueOf(data.getCapacity()));
+                            createRoomTypeTxtName.setText(data.getName());
+                            createRoomTypeTxtPrice.setText(data.getPrice().toString());
+                            createRoomTypeBtnAdd.setText("Editar");
+                            createRoomTypeHiddenId.setText(data.getId().toString());
+                            createRoomTypeBtnAdd.setOnMouseClicked((ActionEvent) -> editRoomTypeAdminPanel());
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        createRoomTypeTableColumnEdit.setCellFactory(cellFactory);
+        createRoomTypeTableView.getItems().addAll(Main.getActualHotel().getRoomTypes());
     }
 
     private void initializeBookingInfo()
@@ -517,6 +658,7 @@ public class ViewController implements Initializable {
         }
 
     }
+
 
     public void loadRoomStatus(MouseEvent mouseEvent)
     {
@@ -887,6 +1029,59 @@ public class ViewController implements Initializable {
 
     }
 
+    public void editRoomAdminPanel() {
+
+        String num = createRoomTxtNum.getText();
+        String reason = createRoomComboReason.getText();
+        RoomStatusEnum status = createRoomComboStatus.getValue();
+        RoomType roomType = createRoomComboType.getValue();
+        if(checkRoom(num, reason, status, roomType))
+        {
+            SetRoomRequest room = new SetRoomRequest(new Integer(num), status, reason, roomType);
+            ErrorResponse<Room> response = Main.getActualHotel().editRoom(room);
+            if(response.getSuccess())
+            {
+                createRoomTableView.getItems().removeIf(r -> r.getRoomNum().equals(new Integer(num)));
+                createRoomTableView.getItems().add(response.getBody());
+                createRoomTxtNum.setText("");
+                createRoomComboReason.setText("");
+                createRoomComboStatus.setValue(null);
+                createRoomComboType.setValue(null);
+                createRoomBtnAdd.setText("+ Agregar");
+                createRoomBtnAdd.setOnMouseClicked((ActionEvent) -> createRoomAdminPanel());
+                createRoomTxtNum.setDisable(false);
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+
+    }
+
+    public void createRoomAdminPanel() {
+
+        String num = createRoomTxtNum.getText();
+        String reason = createRoomComboReason.getText();
+        RoomStatusEnum status = createRoomComboStatus.getValue();
+        RoomType roomType = createRoomComboType.getValue();
+        if(checkRoom(num, reason, status, roomType))
+        {
+            CreateRoomRequest room = new CreateRoomRequest(new Integer(num), status, reason, roomType);
+            ErrorResponse<Room> response = Main.getActualHotel().createRoom(room);
+            if(response.getSuccess())
+            {
+                createRoomTableView.getItems().add(response.getBody());
+                createRoomTxtNum.setText("");
+                createRoomComboReason.setText("");
+                createRoomComboStatus.setValue(null);
+                createRoomComboType.setValue(null);
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+
+    }
+
+
     public void createRoom() {
 
         String num = setupStep5TxtNum.getText();
@@ -911,6 +1106,51 @@ public class ViewController implements Initializable {
                 showError(response.getError().getFancyError(), 1);
         }
 
+    }
+
+    public void editRoomTypeAdminPanel() {
+        String name = createRoomTypeTxtName.getText();
+        String capacity = createRoomTypeTxtCapacity.getText();
+        String price = createRoomTypeTxtPrice.getText();
+        UUID id = UUID.fromString(createRoomTypeHiddenId.getText());
+        if(checkRoomType(name, capacity, price))
+        {
+            SetRoomTypeRequest roomType = new SetRoomTypeRequest(id, name, new Integer(capacity), new Double(price));
+            ErrorResponse<RoomType> response = Main.getActualHotel().editRoomType(roomType);
+            if(response.getSuccess())
+            {
+                createRoomTypeTableView.getItems().removeIf(r -> r.getId().equals(id));
+                createRoomTypeTableView.getItems().add(response.getBody());
+                createRoomTypeTxtName.setText("");
+                createRoomTypeTxtPrice.setText("");
+                createRoomTypeTxtCapacity.setText("");
+                createRoomTypeHiddenId.setText("");
+                createRoomTypeBtnAdd.setText("+ Agregar");
+                createRoomTypeBtnAdd.setOnMouseClicked((ActionEvent) -> createRoomTypeAdminPanel());
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+    }
+
+    public void createRoomTypeAdminPanel() {
+        String name = createRoomTypeTxtName.getText();
+        String capacity = createRoomTypeTxtCapacity.getText();
+        String price = createRoomTypeTxtPrice.getText();
+        if(checkRoomType(name, capacity, price))
+        {
+            CreateRoomTypeRequest roomType = new CreateRoomTypeRequest(name, new Integer(capacity), new Double(price));
+            ErrorResponse<RoomType> response = Main.getActualHotel().createRoomType(roomType);
+            if(response.getSuccess())
+            {
+                createRoomTypeTableView.getItems().add(response.getBody());
+                createRoomTypeTxtName.setText("");
+                createRoomTypeTxtPrice.setText("");
+                createRoomTypeTxtCapacity.setText("");
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
     }
 
     public void createRoomType() {
@@ -1272,6 +1512,13 @@ public class ViewController implements Initializable {
             setupStep5ComboReason.setDisable(true);
     }
 
+    public void toggleReasonAdmin(ActionEvent actionEvent) {
+        if(createRoomComboStatus.getValue() == RoomStatusEnum.NOT_AVAILABLE)
+            createRoomComboReason.setDisable(false);
+        else
+            createRoomComboReason.setDisable(true);
+    }
+
     public void initializeDashboardBookings(){
         if(Main.getActualUser().getRole() == RoleEnum.USER)
         {
@@ -1284,7 +1531,7 @@ public class ViewController implements Initializable {
         else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
             btnMenuAdminPanel.setVisible(false);
         loadTableViewDashboardBookings();
-        loadBookingsToTable(Main.getActualHotel().getBookings());
+        loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
     }
 
     public void initializeDashboardHome(){
@@ -1293,7 +1540,7 @@ public class ViewController implements Initializable {
         if(actualUser.getRole() == RoleEnum.USER)
             loadBookingsToTable(actualUser.getBookings(new GetBookingRequest()));
         else
-            loadBookingsToTable(Main.getActualHotel().getBookings());
+            loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
         if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
             btnMenuAdminPanel.setVisible(false);
     }

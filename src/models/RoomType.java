@@ -16,6 +16,11 @@ public class RoomType extends BaseObject<UUID> {
         this.price = price;
     }
 
+
+    public int getCapacity() {
+        return capacity;
+    }
+
     public String getName() {
         return name;
     }
