@@ -5,7 +5,6 @@ import enums.RoleEnum;
 import enums.RoomStatusEnum;
 import requests.*;
 
-import javax.management.relation.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,7 @@ public class Hotel {
     public ErrorResponse<RoomType> getRoomType(UUID roomTypeId)
     {
         ErrorResponse<RoomType> errorResponse = new ErrorResponse();
-        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId)).findFirst().orElse(null);
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId) && !r.getLogicalDelete()).findFirst().orElse(null);
         if(roomType != null)
         {
             errorResponse.setSuccess(true);
@@ -73,7 +72,7 @@ public class Hotel {
     public ErrorResponse<RoomType> editRoomType(SetRoomTypeRequest values)
     {
         ErrorResponse<RoomType> errorResponse = new ErrorResponse();
-        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(values.getId())).findFirst().orElse(null);
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(values.getId()) && !r.getLogicalDelete()).findFirst().orElse(null);
         if(roomType != null)
         {
             roomType.setValues(values);
@@ -91,7 +90,7 @@ public class Hotel {
     public ErrorResponse<RoomType> deleteRoomType(UUID roomTypeId)
     {
         ErrorResponse<RoomType> errorResponse = new ErrorResponse();
-        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId)).findFirst().orElse(null);
+        RoomType roomType = roomTypes.stream().filter(r -> r.getId().equals(roomTypeId)  && !r.getLogicalDelete()).findFirst().orElse(null);
         if(roomType != null)
         {
             roomType.setLogicalDelete(true);
@@ -133,7 +132,7 @@ public class Hotel {
     public ErrorResponse<Room> editRoom(SetRoomRequest roomRequest)
     {
         ErrorResponse<Room> errorResponse = new ErrorResponse<>();
-        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomRequest.getRoomNum())).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomRequest.getRoomNum())  && !r.getLogicalDelete()).findFirst().orElse(null);
         if(room != null)
         {
             room.setValues(roomRequest);
@@ -151,7 +150,7 @@ public class Hotel {
     public ErrorResponse<Room> getRoom(Integer roomNum)
     {
         ErrorResponse<Room> errorResponse = new ErrorResponse<>();
-        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)  && !r.getLogicalDelete()).findFirst().orElse(null);
         if(room != null)
         {
             errorResponse.setSuccess(true);
@@ -169,8 +168,8 @@ public class Hotel {
 
     public ErrorResponse<Booking> createBooking (CreateBookingRequest values)
     {
-        User user = users.stream().filter(c -> c.getDni().equals(values.getDni())).findFirst().orElse(null);
-        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(values.getRoomId())).findFirst().orElse(null);
+        User user = users.stream().filter(c -> c.getDni().equals(values.getDni()) && !c.getLogicalDelete()).findFirst().orElse(null);
+        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(values.getRoomId()) && !r.getLogicalDelete()).findFirst().orElse(null);
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
             if (isValidDate(room.getBookings(), values.getStartDate(), values.getExpectedFinishDate()))
             {
@@ -218,7 +217,7 @@ public class Hotel {
     {
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
         Room room = rooms.stream().filter(r -> r.getRoomNum() == request.getRoomId() && !r.logicalDelete).findFirst().orElse(null);
-        Booking booking = bookings.stream().filter(b -> b.getId().equals(request.getId())).findFirst().orElse(null);
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(request.getId()) && !b.getLogicalDelete()).findFirst().orElse(null);
         if(booking!=null && room != null) {
             if (isValidDate(room.getBookings(), request.getStartDate(), request.getExpectedFinishDate()))
             {
@@ -272,7 +271,7 @@ public class Hotel {
     public ErrorResponse<User> setUserRole(String dni, RoleEnum role)
     {
         ErrorResponse<User> errorResponse = new ErrorResponse();
-        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        User user = users.stream().filter(u -> u.getDni().equals(dni) && !u.getLogicalDelete()).findFirst().orElse(null);
         if(user != null)
         {
             user.setRole(role);
@@ -290,7 +289,7 @@ public class Hotel {
     public ErrorResponse<User> editUser(SetUserRequest values)
     {
         ErrorResponse<User> errorResponse = new ErrorResponse();
-        User user = users.stream().filter(u -> u.getDni().equals(values.getDni())).findFirst().orElse(null);
+        User user = users.stream().filter(u -> u.getDni().equals(values.getDni()) && !u.getLogicalDelete()).findFirst().orElse(null);
         if(user != null)
         {
             user.setValues(values);
@@ -308,7 +307,7 @@ public class Hotel {
     public ErrorResponse<User> getUser(String dni)
     {
         ErrorResponse<User> errorResponse = new ErrorResponse();
-        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        User user = users.stream().filter(u -> u.getDni().equals(dni) && !u.getLogicalDelete()).findFirst().orElse(null);
         if(user != null)
         {
             errorResponse.setSuccess(true);
@@ -325,7 +324,7 @@ public class Hotel {
     public ErrorResponse<User> deleteUser(String dni)
     {
         ErrorResponse<User> errorResponse = new ErrorResponse();
-        User user = users.stream().filter(u -> u.getDni().equals(dni)).findFirst().orElse(null);
+        User user = users.stream().filter(u -> u.getDni().equals(dni) && !u.getLogicalDelete()).findFirst().orElse(null);
         if(user != null)
         {
             user.setLogicalDelete(true);
@@ -365,7 +364,7 @@ public class Hotel {
     public Boolean userLogin(String dni, String password)
     {
         Boolean response = false;
-        User user = users.stream().filter(e -> e.getDni().equals(dni)).findFirst().orElse(null);
+        User user = users.stream().filter(e -> e.getDni().equals(dni) && !e.getLogicalDelete()).findFirst().orElse(null);
         if(user != null)
         {
             response = user.checkPassword(password);
@@ -376,12 +375,12 @@ public class Hotel {
     public ErrorResponse<Booking> checkout(UUID bookingId)
     {
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
-        Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId)).findFirst().orElse(null);
+        Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId) && !b.getLogicalDelete()).findFirst().orElse(null);
         if(booking != null)
         {
             booking.finish();
             booking.setTotalPrice(booking.getTotalPrice());
-            Room room = rooms.stream().filter(c -> c.getRoomNum().equals(booking.getRoomId())).findFirst().orElse(null);
+            Room room = rooms.stream().filter(c -> c.getRoomNum().equals(booking.getRoomId()) && !c.getLogicalDelete()).findFirst().orElse(null);
             if(room != null)
                 room.setStatus(RoomStatusEnum.UNOCCUPIED, "UNOCCUPIED");
             errorResponse.setSuccess(true);
@@ -417,13 +416,13 @@ public class Hotel {
         List<Booking> bookingList = bookings;
         if (request.getFinished() != null) {
             if (request.getFinished()) {
-                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true) && !b.getLogicalDelete()).collect(Collectors.toList());
             } else if (!request.getFinished()) {
-                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true)).collect(Collectors.toList());
+                bookingList = bookingList.stream().filter(b -> b.getFinished().equals(true) && !b.getLogicalDelete()).collect(Collectors.toList());
             }
         }
         if (request.getRoomNum()!=null) {
-            bookingList = bookingList.stream().filter(b -> b.getRoomId().equals(request.getRoomNum())).collect(Collectors.toList());
+            bookingList = bookingList.stream().filter(b -> b.getRoomId().equals(request.getRoomNum()) && !b.getLogicalDelete()).collect(Collectors.toList());
         }
         return bookingList;
     }
