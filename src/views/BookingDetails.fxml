@@ -23,9 +23,9 @@
         </viewport>
     </ImageView>
     <Pane layoutX="33.0" layoutY="74.0" opacity="0.93" prefHeight="43.0" prefWidth="206.0" style="-fx-background-color: white;" />
-    <Button layoutX="33.0" layoutY="117.0" mnemonicParsing="false" onMouseClicked="#toDashboardHome" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Inicio" />
-    <Button layoutX="33.0" layoutY="148.0" mnemonicParsing="false" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Usuarios" />
-    <Button disable="true" layoutX="33.0" layoutY="179.0" mnemonicParsing="false" onMouseClicked="#toDashboardBookings" opacity="0.75" prefHeight="63.0" prefWidth="206.0" text="Reservas" />
+    <Button fx:id="btnMenuDashboardHome" layoutX="33.0" layoutY="117.0" mnemonicParsing="false" onMouseClicked="#toDashboardHome" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Inicio" />
+    <Button fx:id="btnMenuDashboardUsers"  layoutX="33.0" layoutY="148.0" mnemonicParsing="false" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Usuarios" />
+    <Button fx:id="btnMenuDashboardBookings"  disable="true" layoutX="33.0" layoutY="179.0" mnemonicParsing="false" onMouseClicked="#toDashboardBookings" opacity="0.75" prefHeight="63.0" prefWidth="206.0" text="Reservas" />
     <Button fx:id="btnMenuAdminPanel" layoutX="33.0" layoutY="210.0" mnemonicParsing="false" onMouseClicked="#toAdminPanel" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Admin Panel" />
     <Button layoutX="33.0" layoutY="476.0" mnemonicParsing="false" onMouseClicked="#logout" opacity="0.93" prefHeight="63.0" prefWidth="206.0" text="Salir" />
     <Label alignment="CENTER" layoutX="64.0" layoutY="74.0" prefHeight="43.0" prefWidth="144.0" text="Menu" textAlignment="CENTER" wrapText="true">
@@ -33,7 +33,7 @@
             <Font size="25.0" />
         </font>
     </Label>
-    <Button fx:id="bookingDetailsBtnBack" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
+    <Button fx:id="bookingDetailsBtnBack" onMouseClicked="#toDashboardBookings" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
     <Pane layoutX="321.0" layoutY="75.0" opacity="0.93" prefHeight="435.0" prefWidth="518.0" style="-fx-background-color: white;" />
     <Button fx:id="bookingDetailsBtnEdit" onMouseClicked="#editBooking" layoutX="431.0" layoutY="447.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Editar" />
     <Label layoutX="410.0" layoutY="105.0" text="Detalles">
