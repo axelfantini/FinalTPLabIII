@@ -357,6 +357,8 @@ public class ViewController implements Initializable {
     private void initializeCreateUser()
     {
         createUserTableView.getItems().setAll(Main.getActualHotel().getUsers(new GetUsersRequest()));
+        if (!Main.getActualUser().getRole().equals(RoleEnum.ADMIN))
+            createUserComboRole.setVisible(false);
         createUserComboRole.setConverter(new StringConverter<RoleEnum>() {
             @Override
             public String toString(RoleEnum roleEnum) {
