@@ -26,8 +26,12 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public List<RoomType> getRoomTypes() {
+        return roomTypes;
     }
 
     public Integer getStars() {

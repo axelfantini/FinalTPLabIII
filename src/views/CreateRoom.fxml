@@ -38,7 +38,7 @@
                         <PropertyValueFactory property="statusReason" />
                     </cellValueFactory>
                 </TableColumn>
-            <TableColumn prefWidth="93.60002441406249" text="Editar" />
+            <TableColumn fx:id="createRoomTableColumnEdit" prefWidth="93.60002441406249" text="Editar" />
             </columns>
         </TableView>
       <Pane layoutX="558.0" layoutY="119.0" opacity="0.93" prefHeight="347.0" prefWidth="298.0" style="-fx-background-color: white;" />
@@ -55,9 +55,9 @@
       </Label>
         <TextField fx:id="createRoomTxtNum" layoutX="633.0" layoutY="238.0" prefWidth="150.0" promptText="Num. habitacion" />
         <TextField fx:id="createRoomComboReason" disable="true" layoutX="633.0" layoutY="365.0" prefWidth="150.0" promptText="Razon del Estado" />
-        <Button fx:id="createRoomBtnEnd" layoutX="728.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#toLogin" prefHeight="31.0" prefWidth="90.0" styleClass="primary" text="Terminar" />
-        <Button fx:id="createRoomBtnAdd" layoutX="596.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#createRoom" prefHeight="31.0" prefWidth="90.0" styleClass="success" text="+ Agregar" />
-        <ComboBox fx:id="createRoomComboStatus" layoutX="633.0" layoutY="320.0" onAction="#toggleReason" onMouseClicked="#loadRoomStatus" prefWidth="150.0" promptText="Estado de habitacion" visibleRowCount="3" />
-        <ComboBox fx:id="createRoomComboType" layoutX="633.0" layoutY="278.0" onMouseClicked="#loadRoomTypes" prefWidth="150.0" promptText="Tipo de habitacion" visibleRowCount="3" />
+        <Button fx:id="createRoomBtnEnd" layoutX="728.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#toAdminPanel" prefHeight="31.0" prefWidth="90.0" styleClass="primary" text="Terminar" />
+        <Button fx:id="createRoomBtnAdd" layoutX="596.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#createRoomAdminPanel" prefHeight="31.0" prefWidth="90.0" styleClass="success" text="+ Agregar" />
+        <ComboBox fx:id="createRoomComboStatus" layoutX="633.0" layoutY="320.0" onAction="#toggleReasonAdmin" prefWidth="150.0" promptText="Estado de habitacion" visibleRowCount="3" />
+        <ComboBox fx:id="createRoomComboType" layoutX="633.0" layoutY="278.0"  prefWidth="150.0" promptText="Tipo de habitacion" visibleRowCount="3" />
     </children>
 </AnchorPane>
