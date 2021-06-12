@@ -33,7 +33,7 @@
             <Font size="25.0" />
         </font>
     </Label>
-    <Button fx:id="createBookingBtnBack" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
+    <Button fx:id="createBookingBtnBack" onMouseClicked="#toDashboardHome" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="&lt;- Back" />
     <Pane layoutX="321.0" layoutY="75.0" opacity="0.93" prefHeight="435.0" prefWidth="518.0" style="-fx-background-color: white;" />
     <Button fx:id="createBookingBtnCreate" onMouseClicked="#createBooking" layoutX="546.0" layoutY="458.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="66.0" styleClass="primary" text="Crear" />
     <Label layoutX="486.0" layoutY="84.0" text="Crear Reserva">

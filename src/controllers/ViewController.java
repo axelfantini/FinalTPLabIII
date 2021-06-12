@@ -377,6 +377,8 @@ public class ViewController implements Initializable {
     private void initializeCreateBooking()
     {
         String userDNI = params.getValue("userId");
+        if(Main.getActualUser().getRole() == RoleEnum.USER || Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+            btnMenuAdminPanel.setVisible(false);
         createBookingTxtDni.setText(userDNI);
         createBookingComboBedsType.setConverter(new StringConverter<BedsEnum>() {
             @Override
@@ -458,6 +460,7 @@ public class ViewController implements Initializable {
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
             fileChooser.getExtensionFilters().add(extFilter);
             Main.saveFile(hotel,fileChooser);
+            showSuccess("Datos guardados correctamente",1);
         }
         else
             showError("Error guardando el hotel", 1);
@@ -938,7 +941,7 @@ public class ViewController implements Initializable {
         if(checkUserEdit(name, dni, country, address))
         {
             ErrorResponse<User> errorResponse = Main.getActualHotel().editUser(new SetUserRequest(dni, name, country, address, password, role));
-            if(errorResponse.getSuccess())
+            if (errorResponse.getSuccess())
                 showSuccess("Usuario editado con exito.", 1);
             else
                 showError("Error al editar el usuario", 1);
@@ -1564,6 +1567,9 @@ public class ViewController implements Initializable {
                 {
                     userDetailsBtnDelete.setVisible(false);
                     userDetailsTxtPassword.setVisible(false);
+                    userDetailsTxtName.setDisable(true);
+                    userDetailsTxtAddress.setDisable((true));
+                    userDetailsTxtCountry.setDisable(true);
                 }
 
                 userDetailsComboRole.setDisable(true);

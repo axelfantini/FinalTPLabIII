@@ -204,7 +204,7 @@ public class Hotel {
     {
         ErrorResponse errorResponse = new ErrorResponse();
         Booking booking = bookings.stream().filter(b -> b.getId().equals(bookingId) && !b.logicalDelete).findFirst().orElse(null);
-        if(booking != null)
+        if(booking != null && LocalDate.now().isAfter(booking.getStartDate()) && booking.getFinished().equals(false))
         {
             booking.addExtraConsumption(consumption);
             errorResponse.setSuccess(true);
@@ -212,7 +212,10 @@ public class Hotel {
         else
         {
             errorResponse.setSuccess(false);
-            errorResponse.setError(ErrorEnum.BOOKING_NOT_FOUND);
+            if(booking == null)
+                errorResponse.setError(ErrorEnum.BOOKING_NOT_FOUND);
+            else
+                errorResponse.setError(ErrorEnum.BOOKING_DATE_INVALID);
         }
         return errorResponse;
     }
