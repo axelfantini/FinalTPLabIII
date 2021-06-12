@@ -48,7 +48,6 @@
    <DatePicker fx:id="bookingDetailsDateEnd" layoutX="378.0" layoutY="215.0" onAction="#loadAvailableBookings" promptText="Fecha Finalizacion" />
    <CheckBox fx:id="bookingDetailsCheckLateCheckout" layoutX="381.0" layoutY="262.0" mnemonicParsing="false" text="Late checkout" />
    <ComboBox fx:id="bookingDetailsComboBedTypes" layoutX="378.0" layoutY="351.0" prefWidth="177.0" promptText="Tipo de Camas" />
-   <TextField fx:id="bookingDetailsTxtPrice" disable="true" editable="false" layoutX="377.0" layoutY="399.0" prefWidth="177.0" promptText="Precio total" />
    <Button fx:id="bookingDetailsBtnConsumption" onMouseClicked="#addConsumption" layoutX="612.0" layoutY="227.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" styleClass="primary" text="Agregar consumición" />
    <TextField fx:id="bookingDetailsTxtConsumption" layoutX="627.0" layoutY="181.0" prefWidth="126.0" promptText="Precio consumicion" />
    <Pane fx:id="paneLabelError" layoutX="420.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />

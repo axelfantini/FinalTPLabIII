@@ -30,6 +30,14 @@ public class Booking extends BaseObject<UUID> {
         this.bedTypes = bedTypes;
     }
 
+    public LocalDate getFinishDate() {
+        return finishDate;
+    }
+
+    public Double getExtraConsumption() {
+        return extraConsumption;
+    }
+
     public Integer getRoomId() {
         return this.roomId;
     }

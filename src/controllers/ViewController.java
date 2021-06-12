@@ -129,7 +129,6 @@ public class ViewController implements Initializable {
     public CheckBox bookingDetailsCheckLateCheckout;
     public ComboBox<Room> bookingDetailsComboRoomNum;
     public ComboBox<BedsEnum> bookingDetailsComboBedTypes;
-    public TextField bookingDetailsTxtPrice;
     public Button bookingDetailsBtnConsumption;
     public TextField bookingDetailsTxtConsumption;
 
@@ -581,6 +580,8 @@ public class ViewController implements Initializable {
                             params.setItem("bookingId", data.getId().toString());
                             if(data.getFinished())
                                 toBookingInfo();
+                            else if(data.getCanceled())
+                                showError("Esa reserva fue cancelada", 1);
                             else
                                 toBookingDetails();
                         });
@@ -1395,7 +1396,6 @@ public class ViewController implements Initializable {
             ErrorResponse<Room> errorResponse = Main.getActualHotel().getRoom(booking.getRoomId());
             if(errorResponse.getSuccess())
                 bookingDetailsComboRoomNum.setValue(errorResponse.getBody());
-            bookingDetailsTxtPrice.setText(booking.getTotalPrice().toString());
             bookingDetailsComboBedTypes.setConverter(new StringConverter<BedsEnum>() {
                 @Override
                 public String toString(BedsEnum bedsEnum) {
