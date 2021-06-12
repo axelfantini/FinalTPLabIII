@@ -1641,6 +1641,24 @@ public class ViewController implements Initializable {
         ErrorResponse<Booking> errorResponse2 = Main.getActualHotel().getBooking(bookingId);
         if(errorResponse2.getSuccess())
         {
+            if (Main.getActualUser().getRole().equals(RoleEnum.USER)){
+                bookingDetailsDateStart.setDisable(true);
+                bookingDetailsDateEnd.setDisable(true);
+                bookingDetailsCheckLateCheckout.setDisable(true);
+                bookingDetailsComboRoomNum.setDisable(true);
+                bookingDetailsComboBedTypes.setDisable(true);
+                bookingDetailsBtnCancel.setVisible(false);
+                bookingDetailsBtnDelete.setVisible(false);
+                bookingDetailsBtnFinish.setVisible(false);
+                bookingDetailsBtnConsumption.setVisible(false);
+                bookingDetailsTxtConsumption.setVisible(false);
+                btnMenuAdminPanel.setVisible(false);
+                btnMenuDashboardBookings.setVisible(false);
+                btnMenuDashboardUsers.setVisible(false);
+                btnMenuDashboardHome.setDisable(true);
+                btnMenuDashboardHome.setOpacity(0.93);
+                bookingDetailsBtnEdit.setVisible(false);
+            }
             Booking booking = errorResponse2.getBody();
             bookingDetailsDateStart.setValue(booking.getStartDate());
             bookingDetailsDateEnd.setValue(booking.getExpectedFinishDate());
