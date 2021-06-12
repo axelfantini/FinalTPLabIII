@@ -361,6 +361,8 @@ public class ViewController implements Initializable {
     private void initializeCreateUser()
     {
         createUserTableView.getItems().setAll(Main.getActualHotel().getUsers(new GetUsersRequest()));
+        if (!Main.getActualUser().getRole().equals(RoleEnum.ADMIN))
+            createUserComboRole.setVisible(false);
         createUserComboRole.setConverter(new StringConverter<RoleEnum>() {
             @Override
             public String toString(RoleEnum roleEnum) {
@@ -533,7 +535,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toSetup(MouseEvent mouseEvent){
+    public void toSetup(){
         try {
             Main.changeStage("/views/SetupStep1.fxml");
         } catch (IOException e) {
@@ -541,7 +543,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toSetupStep2(MouseEvent mouseEvent) {
+    public void toSetupStep2() {
         try {
             Main.changeStage("/views/SetupStep2.fxml");
         } catch (IOException e) {
@@ -549,7 +551,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toSetupStep3(MouseEvent mouseEvent) {
+    public void toSetupStep3() {
         try {
             Main.changeStage("/views/SetupStep3.fxml");
         } catch (IOException e) {
@@ -557,7 +559,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toSetupStep4(MouseEvent mouseEvent) {
+    public void toSetupStep4() {
         try {
             if(setupStep3TableViewData.size() > 0)
                 Main.changeStage("/views/SetupStep4.fxml");
@@ -568,7 +570,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toSetupStep5(MouseEvent mouseEvent) {
+    public void toSetupStep5() {
         try {
             if(setupStep4TableViewData.size() > 0)
                 Main.changeStage("/views/SetupStep5.fxml");
@@ -579,7 +581,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toLogin(MouseEvent mouseEvent) {
+    public void toLogin() {
         if(setupStep5TableViewData.size() > 0) {
             saveHotel();
             toLoginScene();
@@ -596,7 +598,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toDashboardHome(MouseEvent mouseEvent) {
+    public void toDashboardHome() {
         try {
             Main.changeStage("/views/DashboardHome.fxml");
         } catch (IOException e) {
@@ -612,7 +614,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toDashboardUsers(MouseEvent mouseEvent) {
+    public void toDashboardUsers() {
         try {
             Main.changeStage("/views/DashboardUsers.fxml");
         } catch (IOException e) {
@@ -620,7 +622,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toAdminPanel(MouseEvent mouseEvent) {
+    public void toAdminPanel() {
         try {
             Main.changeStage("/views/AdminPanel.fxml");
         } catch (IOException e) {
@@ -646,7 +648,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void loadRoomTypes(MouseEvent mouseEvent)
+    public void loadRoomTypes()
     {
         if(setupStep5ComboType.getItems().size()  == 0)
         {
@@ -868,7 +870,7 @@ public class ViewController implements Initializable {
             {
                 if(user.getRole() != RoleEnum.USER)
                 {
-                    toDashboardHome(null);
+                    toDashboardHome();
                 }
                 else
                 {
@@ -929,7 +931,7 @@ public class ViewController implements Initializable {
         String userId = params.getValue("userId");
         ErrorResponse<User> errorResponse = Main.getActualHotel().deleteUser(userId);
         if(errorResponse.getSuccess())
-            toDashboardUsers(null);
+            toDashboardUsers();
         else
             showError("Error borrando el usuario", 1);
     }
@@ -960,7 +962,7 @@ public class ViewController implements Initializable {
         {
             Hotel hotel = new Hotel(name, address, stars);
             Main.setActualHotel(hotel);
-            toSetupStep2(null);
+            toSetupStep2();
         }
     }
 
@@ -975,7 +977,7 @@ public class ViewController implements Initializable {
             CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password, RoleEnum.ADMIN);
             ErrorResponse<User> response = Main.getActualHotel().createUser(user);
             if(response.getSuccess())
-                toSetupStep3(null);
+                toSetupStep3();
             else
                 showError(response.getError().getFancyError(), 1);
         }
@@ -1527,19 +1529,22 @@ public class ViewController implements Initializable {
     }
 
     public void initializeDashboardBookings(){
+        loadTableViewDashboardBookings();
         if(Main.getActualUser().getRole() == RoleEnum.USER)
         {
+            loadBookingsToTable(Main.getActualUser().getBookings(new GetBookingRequest()));
             btnMenuDashboardHome.setDisable(true);
             btnMenuDashboardHome.setOpacity(0.75);
             btnMenuDashboardBookings.setVisible(false);
             btnMenuDashboardUsers.setVisible(false);
             btnMenuAdminPanel.setVisible(false);
         }
-        else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+        else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST) {
             btnMenuAdminPanel.setVisible(false);
-        loadTableViewDashboardBookings();
-        loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
-
+            loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
+        }
+        else
+            loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
         dashboardBookingsComboRoomNum.getItems().addAll(Main.getActualHotel().getRooms().stream().map(r -> r.getRoomNum()).collect(Collectors.toList()));
     }
 
