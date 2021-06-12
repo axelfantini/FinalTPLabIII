@@ -45,7 +45,7 @@
          <Font size="31.0" />
       </font>
    </Label>
-   <Button fx:id="userDetailsBtnBooking" layoutX="639.0" layoutY="298.0" mnemonicParsing="false" styleClass="primary" text="Crear Reserva" />
+   <Button fx:id="userDetailsBtnBooking" layoutX="639.0" layoutY="298.0" mnemonicParsing="false" styleClass="primary" onMouseClicked="#toCreateBooking" text="Crear Reserva" />
    <Button fx:id="userDetailsBtnDelete" onMouseClicked="#deleteUser" layoutX="631.0" layoutY="238.0" mnemonicParsing="false" prefWidth="122.0" styleClass="danger" text="Eliminar Usuario" />
    <ComboBox fx:id="userDetailsComboRole" layoutX="388.0" layoutY="387.0" prefWidth="151.0" promptText="Rol" />
    <Pane fx:id="paneLabelError" layoutX="420.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />

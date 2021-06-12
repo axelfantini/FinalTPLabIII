@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class ViewController implements Initializable {
@@ -110,6 +111,7 @@ public class ViewController implements Initializable {
     public TableColumn dashboardTableColumnDetails;
     public TableColumn dashboardTableColumnRole;
     public ComboBox<RoleEnum> dashboardUsersCombo;
+    public Button dashboardUsersCreateUser;
 
     public Button userDetailsBtnBack;
     public TextField userDetailsTxtName;
@@ -136,6 +138,27 @@ public class ViewController implements Initializable {
     public Button bookingDetailsBtnConsumption;
     public TextField bookingDetailsTxtConsumption;
 
+    public Button createBookingBtnBack;
+    public Button createBookingBtnCreate;
+    public DatePicker createBookingDateStart;
+    public DatePicker createBookingDateEnd;
+    public CheckBox createBookingCheckLateCheckout;
+    public ComboBox<BedsEnum> createBookingComboBedsType;
+    public TextField createBookingTxtPrice;
+    public ComboBox<Room> createBookingComboRoomNum;
+    public TextField createBookingTxtRoomType;
+    public TextField createBookingTxtDni;
+
+    public TableView<User> createUserTableView;
+    public Button createUserBtnAdd;
+    public Button createUserBtnNext;
+    public TextField createUserTxtName;
+    public TextField createUserTxtDNI;
+    public TextField createUserTxtCountry;
+    public TextField createUserTxtAddress;
+    public PasswordField createUserTxtPassword;
+    public ComboBox<RoleEnum> createUserComboRole;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         switch (location.toString().split("/views/")[1])
@@ -145,15 +168,6 @@ public class ViewController implements Initializable {
                 break;
             case "Login.fxml":
                 loadLogin();
-                Main.getActualHotel().createBooking(new CreateBookingRequest(
-                        LocalDate.of(2021,06,02),
-                        LocalDate.of(2021,06,11),
-                        false,
-                        101,
-                        "43742056",
-                        BedsEnum.DOUBLE_BED
-                ));
-
                 break;
             case "DashboardBookings.fxml":
                 if(Main.getActualUser().getRole() == RoleEnum.USER)
@@ -256,7 +270,67 @@ public class ViewController implements Initializable {
                     bookingDetailsComboBedTypes.setValue(booking.getBedTypes());
                 }
                 break;
+            case "CreateBooking.fxml":
+                initializeCreateBooking();
+                break;
+            case "CreateUser.fxml":
+                initializeCreateUser();
+                break;
         }
+    }
+
+    private void initializeCreateUser()
+    {
+        createUserTableView.getItems().setAll(Main.getActualHotel().getUsers(new GetUsersRequest()));
+        createUserComboRole.setConverter(new StringConverter<RoleEnum>() {
+            @Override
+            public String toString(RoleEnum roleEnum) {
+                return roleEnum.getName();
+            }
+
+            @Override
+            public RoleEnum fromString(String string) {
+                return null;
+            }
+        });
+        createUserComboRole.getItems().addAll(
+                RoleEnum.USER,
+                RoleEnum.RECEPTIONIST,
+                RoleEnum.ADMIN);
+    }
+
+    private void initializeCreateBooking()
+    {
+        String userDNI = params.getValue("userId");
+        createBookingTxtDni.setText(userDNI);
+        createBookingComboBedsType.setConverter(new StringConverter<BedsEnum>() {
+            @Override
+            public String toString(BedsEnum bedsEnum) {
+                return bedsEnum.getName();
+            }
+
+            @Override
+            public BedsEnum fromString(String string) {
+                return null;
+            }
+        });
+        createBookingComboBedsType.getItems().addAll(
+                BedsEnum.DOUBLE_BED,
+                BedsEnum.TWO_SINGLES,
+                BedsEnum.DOUBLE_BED_AND_SINGLES,
+                BedsEnum.FOUR_SINGLES);
+
+        createBookingComboRoomNum.setConverter(new StringConverter<Room>() {
+            @Override
+            public String toString(Room room) {
+                return room.getRoomNum().toString();
+            }
+
+            @Override
+            public Room fromString(String string) {
+                return null;
+            }
+        });
     }
 
     private Boolean isInt(String string)
@@ -302,11 +376,16 @@ public class ViewController implements Initializable {
         toLoginScene();
     }
 
-    public void saveHotelBackup(Hotel hotel)
+    public void saveHotelBackup()
     {
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(extFilter);
-        Main.saveFile(hotel,fileChooser);
+        Hotel hotel = Main.getActualHotel();
+        if (hotel != null) {
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+            fileChooser.getExtensionFilters().add(extFilter);
+            Main.saveFile(hotel,fileChooser);
+        }
+        else
+            showError("Error guardando el hotel", 1);
     }
 
     public void saveHotel()
@@ -419,7 +498,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toDashboardBookings(MouseEvent mouseEvent) {
+    public void toDashboardBookings() {
         try {
             Main.changeStage("/views/DashboardBookings.fxml");
         } catch (IOException e) {
@@ -681,7 +760,7 @@ public class ViewController implements Initializable {
                 }
                 else
                 {
-                    toDashboardBookings(null);
+                    toDashboardBookings();
                 }
             }
         }
@@ -696,6 +775,38 @@ public class ViewController implements Initializable {
     public void toHome(MouseEvent mouseEvent){
         try {
             Main.changeStage("/views/Home.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toCreateBooking(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/CreateBooking.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toCreateUser(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/CreateUser.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toCreateRoom(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/CreateRoom.fxml");
+        } catch (IOException e) {
+            showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
+        }
+    }
+
+    public void toCreateRoomType(MouseEvent mouseEvent){
+        try {
+            Main.changeStage("/views/CreateRoomType.fxml");
         } catch (IOException e) {
             showError(ErrorEnum.VIEW_NOT_FOUND.getFancyError(), 1);
         }
@@ -781,6 +892,33 @@ public class ViewController implements Initializable {
 
     }
 
+    public void createUser() {
+        String name = createUserTxtName.getText();
+        String dni = createUserTxtDNI.getText();
+        String country = createUserTxtCountry.getText();
+        String address = createUserTxtAddress.getText();
+        String password = createUserTxtPassword.getText();
+        RoleEnum role = createUserComboRole.getValue();
+        if(checkUser(name, dni, country, address, password))
+        {
+            CreateUserRequest user = new CreateUserRequest(name, dni, country, address, password, role != null ? role : RoleEnum.USER);
+            ErrorResponse<User> response = Main.getActualHotel().createUser(user);
+            if(response.getSuccess())
+            {
+                createUserTableView.getItems().add(response.getBody());
+                createUserTxtName.setText("");
+                createUserTxtDNI.setText("");
+                createUserTxtCountry.setText("");
+                createUserTxtAddress.setText("");
+                createUserTxtPassword.setText("");
+                createUserComboRole.setValue(null);
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+
+    }
+
     public void createRoom(MouseEvent mouseEvent) {
 
         String num = setupStep5TxtNum.getText();
@@ -820,6 +958,66 @@ public class ViewController implements Initializable {
             else
                 showError(response.getError().getFancyError(), 1);
         }
+    }
+
+    public void createBooking() {
+        String dni = createBookingTxtDni.getText();
+        LocalDate startDate = createBookingDateStart.getValue();
+        LocalDate endDate = createBookingDateEnd.getValue();
+        Room room = createBookingComboRoomNum.getValue();
+        Integer roomNum = null;
+        if(room != null)
+            roomNum = room.getRoomNum();
+        Boolean lateCheckout = createBookingCheckLateCheckout.isSelected();
+        BedsEnum bedsType = createBookingComboBedsType.getValue();
+
+        if(checkBooking(startDate, endDate, lateCheckout, roomNum, dni, bedsType))
+        {
+            CreateBookingRequest booking = new CreateBookingRequest(startDate, endDate, lateCheckout, roomNum, dni, bedsType);;
+            ErrorResponse<Booking> response = Main.getActualHotel().createBooking(booking);
+            if(response.getSuccess())
+            {
+                toDashboardBookings();
+            }
+            else
+                showError(response.getError().getFancyError(), 1);
+        }
+    }
+
+    private Boolean checkBooking(LocalDate startDate, LocalDate endDate, Boolean lateCheckout, Integer roomNum, String dni, BedsEnum bedsType)
+    {
+        Boolean response = true;
+        if(startDate == null)
+        {
+            showError("Fecha de inicio invalida", 1);
+            response = false;
+        }
+        if(endDate == null)
+        {
+            showError("Fecha de finalizacion invalida", 1);
+            response = false;
+        }
+        if(lateCheckout == null)
+        {
+            showError("Late checkout invalido", 1);
+            response = false;
+        }
+        if(roomNum == null)
+        {
+            showError("Numero de habitacion invalido", 1);
+            response = false;
+        }
+        if(dni == null || dni == "")
+        {
+            showError("DNI invalido", 1);
+            response = false;
+        }
+        if(bedsType == null)
+        {
+            showError("Tipo de camas invalido", 1);
+            response = false;
+        }
+        return response;
     }
 
     private Boolean checkLogin(String dni, String pass)
@@ -974,6 +1172,43 @@ public class ViewController implements Initializable {
             response = false;
         }
         return response;
+    }
+
+    public void checkBookingDates()
+    {
+        LocalDate startDate = createBookingDateStart.getValue();
+        LocalDate endDate = createBookingDateEnd.getValue();
+        if(startDate != null && createBookingDateEnd.getValue() != null)
+        {
+            if(startDate.isAfter(endDate) ||
+                    startDate.equals(endDate))
+            {
+                createBookingDateStart.setValue(null);
+                createBookingDateEnd.setValue(null);
+                showError("Fechas no validas.", 1);
+                createBookingComboRoomNum.getItems().clear();
+            }
+            else
+            {
+                createBookingComboRoomNum.getItems().clear();
+                List<Room> roomList = Main.getActualHotel().getAvailableRooms(startDate, endDate);
+                createBookingComboRoomNum.getItems().addAll(roomList);
+            }
+        }
+        else
+            createBookingComboRoomNum.getItems().clear();
+
+    }
+
+    public void selectRoomNum()
+    {
+        Room room = createBookingComboRoomNum.getValue();
+        if(room != null)
+        {
+            Long days = ChronoUnit.DAYS.between(createBookingDateStart.getValue(), createBookingDateEnd.getValue());
+            createBookingTxtRoomType.setText(room.getRoomType().getName());
+            createBookingTxtPrice.setText(String.valueOf((room.getRoomType().getPrice() * days)));
+        }
     }
 
     public void toggleReason(ActionEvent actionEvent) {
