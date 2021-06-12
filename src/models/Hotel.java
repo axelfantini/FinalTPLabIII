@@ -202,11 +202,7 @@ public class Hotel {
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
         Booking booking = bookings.stream().filter(b -> b.getId().equals(request.getId())).findFirst().orElse(null);
         if(booking!=null) {
-            if (!(bookings.stream().anyMatch(b -> (request.getStartDate().isBefore(b.getExpectedFinishDate())&& request.getStartDate().isAfter(b.getStartDate())
-                && request.getExpectedFinishDate().isBefore(b.getExpectedFinishDate())&& request.getExpectedFinishDate().isAfter(b.getStartDate()))
-                || (b.getStartDate().isBefore(request.getExpectedFinishDate())&& b.getStartDate().isAfter(request.getStartDate())
-                && b.getExpectedFinishDate().isBefore(request.getExpectedFinishDate())&& b.getExpectedFinishDate().isAfter(request.getStartDate()))
-                ||b.getFinished()||b.getCanceled()||b.getLogicalDelete())))
+            if (isValidDate(bookings, request.getStartDate(), request.getExpectedFinishDate()))
             {
                 booking.setValues(request);
                 errorResponse.setSuccess(true);
