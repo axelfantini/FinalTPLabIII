@@ -31,6 +31,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ViewController implements Initializable {
 
@@ -106,7 +107,9 @@ public class ViewController implements Initializable {
     public TableColumn dashboardTableColumnDetails;
     public TableColumn dashboardTableColumnRole;
     public ComboBox<RoleEnum> dashboardUsersCombo;
+    public TextField dashboardUsersTxtSearch;
     public Button dashboardUsersCreateUser;
+    public ToggleButton dashboardBookingsToggle;
 
     public Button userDetailsBtnBack;
     public TextField userDetailsTxtName;
@@ -131,6 +134,7 @@ public class ViewController implements Initializable {
     public ComboBox<BedsEnum> bookingDetailsComboBedTypes;
     public Button bookingDetailsBtnConsumption;
     public TextField bookingDetailsTxtConsumption;
+    public ComboBox<Integer> dashboardBookingsComboRoomNum;
 
     public Button createBookingBtnBack;
     public Button createBookingBtnCreate;
@@ -1535,6 +1539,8 @@ public class ViewController implements Initializable {
             btnMenuAdminPanel.setVisible(false);
         loadTableViewDashboardBookings();
         loadBookingsToTable(Main.getActualHotel().getBookings(new GetBookingRequest()));
+
+        dashboardBookingsComboRoomNum.getItems().addAll(Main.getActualHotel().getRooms().stream().map(r -> r.getRoomNum()).collect(Collectors.toList()));
     }
 
     public void initializeDashboardHome(){
@@ -1667,6 +1673,22 @@ public class ViewController implements Initializable {
                     BedsEnum.FOUR_SINGLES);
             bookingDetailsComboBedTypes.setValue(booking.getBedTypes());
         }
+    }
+
+    public void applyUserFilters()
+    {
+        RoleEnum role = dashboardUsersCombo.getValue();
+        String search = dashboardUsersTxtSearch.getText();
+        dashboardUsersTableView.getItems().clear();
+        dashboardUsersTableView.getItems().addAll(Main.getActualHotel().getUsers(new GetUsersRequest(role, search)));
+    }
+
+    public void applyBookingsFilters()
+    {
+        Boolean finishedBookings = dashboardBookingsToggle.isSelected();
+        Integer roomNum = dashboardBookingsComboRoomNum.getValue();
+        dashboardTableView.getItems().clear();
+        dashboardTableView.getItems().addAll(Main.getActualHotel().getBookings(new GetBookingRequest(finishedBookings, roomNum)));
     }
 
     public void removeHotel(){
