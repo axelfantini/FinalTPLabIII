@@ -30,12 +30,6 @@ public class Booking extends BaseObject<UUID> {
         this.bedTypes = bedTypes;
     }
 
-    public Booking() {}
-
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
-    }
-
     public Integer getRoomId() {
         return this.roomId;
     }
@@ -44,9 +38,6 @@ public class Booking extends BaseObject<UUID> {
         return startDate;
     }
 
-    public LocalDate getFinishDate() {
-        return finishDate;
-    }
 
     public LocalDate getExpectedFinishDate() {
         return expectedFinishDate;
@@ -64,44 +55,8 @@ public class Booking extends BaseObject<UUID> {
         return finished;
     }
 
-    public void setFinishDate(LocalDate finishDate) {
-        this.finishDate = finishDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setExpectedFinishDate(LocalDate expectedFinishDate) {
-        this.expectedFinishDate = expectedFinishDate;
-    }
-
-    public void setLateCheckout(Boolean lateCheckout) {
-        this.lateCheckout = lateCheckout;
-    }
-
-    public void setCanceled(Boolean canceled) {
-        this.canceled = canceled;
-    }
-
-    public Double getRoomPrice() {
-        return roomPrice;
-    }
-
-    public void setRoomPrice(Double roomPrice) {
-        this.roomPrice = roomPrice;
-    }
-
     public BedsEnum getBedTypes() {
         return bedTypes;
-    }
-
-    public void setBedTypes(BedsEnum bedTypes) {
-        this.bedTypes = bedTypes;
-    }
-
-    public Double getExtraConsumption() {
-        return extraConsumption;
     }
 
     public void addExtraConsumption(Double extraConsumption) {
@@ -121,7 +76,7 @@ public class Booking extends BaseObject<UUID> {
         this.finishDate = LocalDate.now();
         if (this.finishDate.isBefore(this.startDate))
             this.canceled = true;
-        else if (this.finishDate.equals(this.expectedFinishDate))
+        else
             this.finished = true;
     }
 

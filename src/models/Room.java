@@ -30,10 +30,6 @@ public class Room extends BaseObject<Integer> implements IBooking {
         return status;
     }
 
-    public String getStatusReason() {
-        return statusReason;
-    }
-
     public Integer getRoomNum() {
         return this.id;
     }
