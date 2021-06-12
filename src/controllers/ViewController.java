@@ -31,8 +31,13 @@ import requests.*;
 import javax.management.relation.Role;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -170,105 +175,19 @@ public class ViewController implements Initializable {
                 loadLogin();
                 break;
             case "DashboardBookings.fxml":
-                if(Main.getActualUser().getRole() == RoleEnum.USER)
-                {
-                    btnMenuDashboardHome.setDisable(true);
-                    btnMenuDashboardHome.setOpacity(0.75);
-                    btnMenuDashboardBookings.setVisible(false);
-                    btnMenuDashboardUsers.setVisible(false);
-                    btnMenuAdminPanel.setVisible(false);
-                }
-                else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
-                    btnMenuAdminPanel.setVisible(false);
-                loadTableViewDashboardBookings();
-                loadBookingsToTable(Main.getActualHotel().getBookings());
+                initializeDashboardBookings();
                 break;
             case "DashboardHome.fxml":
-                loadTableViewDashboardBookings();
-                User actualUser = Main.getActualUser();
-                if(actualUser.getRole() == RoleEnum.USER)
-                    loadBookingsToTable(actualUser.getBookings(new GetBookingRequest()));
-                else
-                    loadBookingsToTable(Main.getActualHotel().getBookings());
-                if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
-                    btnMenuAdminPanel.setVisible(false);
+                initializeDashboardHome();
                 break;
             case "DashboardUsers.fxml":
-                loadTableViewDashboardUsers();
-                loadUsersToTable(Main.getActualHotel().getUsers(new GetUsersRequest()));
-                if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
-                    btnMenuAdminPanel.setVisible(false);
+                initializeDashboardUsers();
                 break;
             case "UserDetails.fxml":
-                String userId = params.getValue("userId");
-                ErrorResponse<User> errorResponse = Main.getActualHotel().getUser(userId);
-                if(errorResponse.getSuccess())
-                {
-                    User user = errorResponse.getBody();
-                    if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
-                    {
-                        if(user.getRole() != RoleEnum.USER)
-                        {
-                            userDetailsBtnDelete.setVisible(false);
-                            userDetailsTxtPassword.setVisible(false);
-                        }
-
-                        userDetailsComboRole.setDisable(true);
-                        btnMenuAdminPanel.setVisible(false);
-                    }
-                    if(userId == Main.getActualUser().getId())
-                        userDetailsBtnDelete.setVisible(false);
-                    userDetailsTxtName.setText(user.getName());
-                    userDetailsTxtDNI.setText(user.getDni());
-                    userDetailsTxtCountry.setText(user.getCountry());
-                    userDetailsTxtAddress.setText(user.getAddress());
-                    userDetailsComboRole.setConverter(new StringConverter<RoleEnum>() {
-                        @Override
-                        public String toString(RoleEnum roleEnum) {
-                            return roleEnum.getName();
-                        }
-
-                        @Override
-                        public RoleEnum fromString(String string) {
-                            return null;
-                        }
-                    });
-                    userDetailsComboRole.getItems().addAll(
-                            RoleEnum.USER,
-                            RoleEnum.RECEPTIONIST,
-                            RoleEnum.ADMIN);
-                    userDetailsComboRole.setValue(user.getRole());
-                }
+                initializeUserDetails();
                 break;
             case "BookingDetails.fxml":
-                UUID bookingId = UUID.fromString((params.getValue("bookingId")));
-                ErrorResponse<Booking> errorResponse2 = Main.getActualHotel().getBooking(bookingId);
-                if(errorResponse2.getSuccess())
-                {
-                    Booking booking = errorResponse2.getBody();
-                    bookingDetailsDateStart.setValue(booking.getStartDate());
-                    bookingDetailsDateEnd.setValue(booking.getExpectedFinishDate());
-                    bookingDetailsCheckLateCheckout.setSelected(booking.getLateCheckout());
-                    bookingDetailsTxtRoomNum.setText(booking.getRoomId().toString());
-                    bookingDetailsTxtPrice.setText(booking.getTotalPrice().toString());
-                    bookingDetailsComboBedTypes.setConverter(new StringConverter<BedsEnum>() {
-                        @Override
-                        public String toString(BedsEnum bedsEnum) {
-                            return bedsEnum.getName();
-                        }
-
-                        @Override
-                        public BedsEnum fromString(String string) {
-                            return null;
-                        }
-                    });
-                    bookingDetailsComboBedTypes.getItems().addAll(
-                            BedsEnum.DOUBLE_BED,
-                            BedsEnum.TWO_SINGLES,
-                            BedsEnum.DOUBLE_BED_AND_SINGLES,
-                            BedsEnum.FOUR_SINGLES);
-                    bookingDetailsComboBedTypes.setValue(booking.getBedTypes());
-                }
+                initializeBookingsDetails();
                 break;
             case "CreateBooking.fxml":
                 initializeCreateBooking();
@@ -772,7 +691,7 @@ public class ViewController implements Initializable {
         toLoginScene();
     }
 
-    public void toHome(MouseEvent mouseEvent){
+    public void toHome(){
         try {
             Main.changeStage("/views/Home.fxml");
         } catch (IOException e) {
@@ -885,6 +804,11 @@ public class ViewController implements Initializable {
                 setupStep3TableViewData.add(response.getBody());
                 setupStep3TableView.setItems(FXCollections.observableArrayList(setupStep3TableViewData));
                 setupStep3TableView.setVisible(true);
+                setupStep3TxtName.setText("");
+                setupStep3TxtDNI.setText("");
+                setupStep3TxtCountry.setText("");
+                setupStep3TxtAddress.setText("");
+                setupStep3TxtPassword.setText("");
             }
             else
                 showError(response.getError().getFancyError(), 1);
@@ -934,6 +858,10 @@ public class ViewController implements Initializable {
                 setupStep5TableViewData.add(response.getBody());
                 setupStep5TableView.setItems(FXCollections.observableArrayList(setupStep5TableViewData));
                 setupStep5TableView.setVisible(true);
+                setupStep5TxtNum.setText("");
+                setupStep5ComboReason.setText("");
+                setupStep5ComboStatus.setValue(null);
+                setupStep5ComboType.setValue(null);
             }
             else
                 showError(response.getError().getFancyError(), 1);
@@ -954,6 +882,9 @@ public class ViewController implements Initializable {
                 setupStep4TableViewData.add(response.getBody());
                 setupStep4TableView.setItems(FXCollections.observableArrayList(setupStep4TableViewData));
                 setupStep4TableView.setVisible(true);
+                setupStep4TxtName.setText("");
+                setupStep4TxtCapacity.setText("");
+                setupStep4TxtPrice.setText("");
             }
             else
                 showError(response.getError().getFancyError(), 1);
@@ -1216,5 +1147,117 @@ public class ViewController implements Initializable {
             setupStep5ComboReason.setDisable(false);
         else
             setupStep5ComboReason.setDisable(true);
+    }
+
+    public void initializeDashboardBookings(){
+        if(Main.getActualUser().getRole() == RoleEnum.USER)
+        {
+            btnMenuDashboardHome.setDisable(true);
+            btnMenuDashboardHome.setOpacity(0.75);
+            btnMenuDashboardBookings.setVisible(false);
+            btnMenuDashboardUsers.setVisible(false);
+            btnMenuAdminPanel.setVisible(false);
+        }
+        else if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+            btnMenuAdminPanel.setVisible(false);
+        loadTableViewDashboardBookings();
+        loadBookingsToTable(Main.getActualHotel().getBookings());
+    }
+
+    public void initializeDashboardHome(){
+        loadTableViewDashboardBookings();
+        User actualUser = Main.getActualUser();
+        if(actualUser.getRole() == RoleEnum.USER)
+            loadBookingsToTable(actualUser.getBookings(new GetBookingRequest()));
+        else
+            loadBookingsToTable(Main.getActualHotel().getBookings());
+        if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+            btnMenuAdminPanel.setVisible(false);
+    }
+
+    public void initializeDashboardUsers() {
+        loadTableViewDashboardUsers();
+        loadUsersToTable(Main.getActualHotel().getUsers(new GetUsersRequest()));
+        if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+            btnMenuAdminPanel.setVisible(false);
+    }
+
+    public void initializeUserDetails() {
+        String userId = params.getValue("userId");
+        ErrorResponse<User> errorResponse = Main.getActualHotel().getUser(userId);
+        if(errorResponse.getSuccess())
+        {
+            User user = errorResponse.getBody();
+            if(Main.getActualUser().getRole() == RoleEnum.RECEPTIONIST)
+            {
+                if(user.getRole() != RoleEnum.USER)
+                {
+                    userDetailsBtnDelete.setVisible(false);
+                    userDetailsTxtPassword.setVisible(false);
+                }
+
+                userDetailsComboRole.setDisable(true);
+                btnMenuAdminPanel.setVisible(false);
+            }
+            if(userId == Main.getActualUser().getId())
+                userDetailsBtnDelete.setVisible(false);
+            userDetailsTxtName.setText(user.getName());
+            userDetailsTxtDNI.setText(user.getDni());
+            userDetailsTxtCountry.setText(user.getCountry());
+            userDetailsTxtAddress.setText(user.getAddress());
+            userDetailsComboRole.setConverter(new StringConverter<RoleEnum>() {
+                @Override
+                public String toString(RoleEnum roleEnum) {
+                    return roleEnum.getName();
+                }
+
+                @Override
+                public RoleEnum fromString(String string) {
+                    return null;
+                }
+            });
+            userDetailsComboRole.getItems().addAll(
+                    RoleEnum.USER,
+                    RoleEnum.RECEPTIONIST,
+                    RoleEnum.ADMIN);
+            userDetailsComboRole.setValue(user.getRole());
+        }
+    }
+
+    public void initializeBookingsDetails(){
+        UUID bookingId = UUID.fromString((params.getValue("bookingId")));
+        ErrorResponse<Booking> errorResponse2 = Main.getActualHotel().getBooking(bookingId);
+        if(errorResponse2.getSuccess())
+        {
+            Booking booking = errorResponse2.getBody();
+            bookingDetailsDateStart.setValue(booking.getStartDate());
+            bookingDetailsDateEnd.setValue(booking.getExpectedFinishDate());
+            bookingDetailsCheckLateCheckout.setSelected(booking.getLateCheckout());
+            bookingDetailsTxtRoomNum.setText(booking.getRoomId().toString());
+            bookingDetailsTxtPrice.setText(booking.getTotalPrice().toString());
+            bookingDetailsComboBedTypes.setConverter(new StringConverter<BedsEnum>() {
+                @Override
+                public String toString(BedsEnum bedsEnum) {
+                    return bedsEnum.getName();
+                }
+
+                @Override
+                public BedsEnum fromString(String string) {
+                    return null;
+                }
+            });
+            bookingDetailsComboBedTypes.getItems().addAll(
+                    BedsEnum.DOUBLE_BED,
+                    BedsEnum.TWO_SINGLES,
+                    BedsEnum.DOUBLE_BED_AND_SINGLES,
+                    BedsEnum.FOUR_SINGLES);
+            bookingDetailsComboBedTypes.setValue(booking.getBedTypes());
+        }
+    }
+
+    public void removeHotel(){
+        Boolean response = Main.deleteFile();
+        if(response)
+            toHome();
     }
 }

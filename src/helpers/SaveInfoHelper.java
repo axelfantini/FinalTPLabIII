@@ -54,6 +54,7 @@ public class SaveInfoHelper {
             T item = gson.fromJson(br, tClass);
             errorResponse.setSuccess(true);
             errorResponse.setBody(item);
+            br.close();
 
         } catch (IOException e) {
             errorResponse.setSuccess(false);

@@ -86,6 +86,24 @@ public class Main extends Application {
         return response;
     }
 
+    public static Boolean deleteFile(){
+        JFileChooser fr = new JFileChooser();
+        FileSystemView fw = fr.getFileSystemView();
+        File file = new File(fw.getDefaultDirectory() +"\\HotelManager\\save.json");
+        Boolean response = false;
+        try
+        {
+            if(file.exists()){
+                response = file.delete();
+                System.out.println("archivo borrado");
+            }
+        }
+        catch (Exception exception){
+            System.out.println("ando pal culo");
+        }
+        return response;
+    }
+
     public static User getActualUser() {
         return actualUser;
     }

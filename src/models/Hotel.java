@@ -322,20 +322,6 @@ public class Hotel {
         users.forEach(u -> this.createUser(u));
     }
 
-    public void createBooking(String dni, Integer roomNum, Booking booking)
-    {
-        User user = users.stream().filter(c -> c.getDni().equals(dni)).findFirst().orElse(null);
-        Room room = rooms.stream().filter(r -> r.getRoomNum().equals(roomNum)).findFirst().orElse(null);
-        if(user != null && room != null && booking.getStartDate().isBefore(booking.getFinishDate()))
-        {
-            booking.setRoomId(room.getRoomNum());
-            bookings.add(booking);
-            room.addBooking(booking);
-            user.addBooking(booking);
-            room.setStatus(RoomStatusEnum.OCCUPIED, "OCCUPIED");
-        }
-    }
-
     public ErrorResponse<Booking> getBooking(UUID bookingId)
     {
         ErrorResponse<Booking> errorResponse = new ErrorResponse<>();
