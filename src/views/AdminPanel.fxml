@@ -35,7 +35,7 @@
    <Button layoutX="466.0" layoutY="317.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="206.0" styleClass="success" text="Guardar copia de seguridad" />
    <Button layoutX="470.0" layoutY="370.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="198.0" styleClass="primary" text="Cargar copia de seguridad" />
    <Button layoutX="463.0" layoutY="262.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="213.0" styleClass="success" text="Guardar informacion del hotel" />
-   <Button layoutX="502.0" layoutY="423.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="134.0" styleClass="danger" text="Eliminar hotel" />
+   <Button layoutX="502.0" layoutY="423.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="134.0" styleClass="danger" text="Eliminar hotel" onMouseClicked="#removeHotel" />
    <Pane fx:id="paneLabelError" layoutX="409.0" layoutY="524.0" opacity="0.67" prefHeight="46.0" prefWidth="320.0" style="-fx-background-color: red;" visible="false" />
    <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="420.0" layoutY="525.0" prefHeight="46.0" prefWidth="298.0" text="ERROR" textAlignment="CENTER" textFill="WHITE" visible="false" wrapText="true">
       <font>
