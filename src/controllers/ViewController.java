@@ -10,14 +10,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -28,16 +24,10 @@ import main.Main;
 import models.*;
 import requests.*;
 
-import javax.management.relation.Role;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -707,7 +697,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toCreateUser(MouseEvent mouseEvent){
+    public void toCreateUser(){
         try {
             Main.changeStage("/views/CreateUser.fxml");
         } catch (IOException e) {
@@ -715,7 +705,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toCreateRoom(MouseEvent mouseEvent){
+    public void toCreateRoom(){
         try {
             Main.changeStage("/views/CreateRoom.fxml");
         } catch (IOException e) {
@@ -723,7 +713,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void toCreateRoomType(MouseEvent mouseEvent){
+    public void toCreateRoomType(){
         try {
             Main.changeStage("/views/CreateRoomType.fxml");
         } catch (IOException e) {
@@ -759,7 +749,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void createHotel(MouseEvent mouseEvent) {
+    public void createHotel() {
         String name = setupTxtName.getText();
         String address = setupTxtAddress.getText();
         Integer stars = (int) Math.round(setupSliderStars.getValue());
@@ -771,7 +761,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void createAdmin(MouseEvent mouseEvent) {
+    public void createAdmin() {
         String name = setupStep2TxtName.getText();
         String dni = setupStep2TxtDNI.getText();
         String country = setupStep2TxtCountry.getText();
@@ -789,7 +779,7 @@ public class ViewController implements Initializable {
 
     }
 
-    public void createReceptionist(MouseEvent mouseEvent) {
+    public void createReceptionist() {
         String name = setupStep3TxtName.getText();
         String dni = setupStep3TxtDNI.getText();
         String country = setupStep3TxtCountry.getText();
@@ -843,7 +833,7 @@ public class ViewController implements Initializable {
 
     }
 
-    public void createRoom(MouseEvent mouseEvent) {
+    public void createRoom() {
 
         String num = setupStep5TxtNum.getText();
         String reason = setupStep5ComboReason.getText();
@@ -869,7 +859,7 @@ public class ViewController implements Initializable {
 
     }
 
-    public void createRoomType(MouseEvent mouseEvent) {
+    public void createRoomType() {
         String name = setupStep4TxtName.getText();
         String capacity = setupStep4TxtCapacity.getText();
         String price = setupStep4TxtPrice.getText();
