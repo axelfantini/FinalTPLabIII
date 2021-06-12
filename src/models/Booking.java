@@ -46,7 +46,6 @@ public class Booking extends BaseObject<UUID> {
         return startDate;
     }
 
-
     public LocalDate getExpectedFinishDate() {
         return expectedFinishDate;
     }
